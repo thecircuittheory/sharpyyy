@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: #fff;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 20px 10px;
             overflow-x: hidden;
             background: radial-gradient(circle at center, #101025 0%, #05050a 100%);
             position: relative;
@@ -63,32 +63,33 @@
 
         .header-title {
             text-align: center;
-            font-size: 3rem;
+            font-size: clamp(1.8rem, 8vw, 3rem);
             font-weight: 900;
             color: #fff;
             text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
             margin-bottom: 10px;
-            letter-spacing: 8px;
+            letter-spacing: clamp(2px, 2vw, 8px);
             text-transform: uppercase;
         }
 
         .warning-note {
             text-align: center;
             color: var(--magenta);
-            font-size: 0.85rem;
-            margin-bottom: 30px;
-            padding: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            padding: 10px;
             border: 1px solid var(--magenta);
             background: rgba(255, 0, 255, 0.05);
             border-radius: 4px;
             box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+            line-height: 1.4;
         }
 
         .cyber-card {
             background: var(--glass-bg);
             border: 1px solid var(--cyan);
             border-radius: 8px;
-            padding: 40px;
+            padding: clamp(15px, 5vw, 40px);
             box-shadow: var(--border-glow);
             backdrop-filter: blur(15px);
         }
@@ -96,7 +97,7 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: 20px;
         }
 
         .full-width {
@@ -118,18 +119,18 @@
 
         label {
             color: var(--cyan);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
         }
 
         .btn-mini-format {
             background: rgba(255, 0, 255, 0.1);
             border: 1px solid var(--magenta);
             color: var(--magenta);
-            font-size: 0.7rem;
-            padding: 2px 8px;
+            font-size: 0.65rem;
+            padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
             transition: 0.3s;
@@ -153,6 +154,7 @@
             font-size: 0.95rem;
             outline: none;
             transition: 0.3s;
+            width: 100%;
         }
 
         textarea {
@@ -170,11 +172,11 @@
             background: transparent;
             border: 2px solid var(--cyan);
             color: var(--cyan);
-            padding: 20px;
-            font-size: 1.1rem;
+            padding: 18px;
+            font-size: 1rem;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             border-radius: 4px;
             cursor: pointer;
             margin-top: 20px;
@@ -196,13 +198,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
         }
 
-        /* WATERMARK SECTION UPGRADE */
+        /* WATERMARK SECTION */
         .watermark-zone {
             border: 2px dashed var(--blue);
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             transition: 0.3s;
             background: rgba(0, 51, 255, 0.05);
@@ -212,19 +216,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            min-height: 100px;
+            gap: 15px;
+            min-height: 80px;
         }
 
         .watermark-zone:hover {
             border-color: var(--cyan);
             background: rgba(0, 243, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
         }
 
         .watermark-preview {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
             border: 1px solid var(--cyan);
             background: #000;
             display: flex;
@@ -232,53 +236,26 @@
             justify-content: center;
             border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 0 10px var(--cyan);
         }
 
         .watermark-preview img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            opacity: 0.8;
         }
 
         .watermark-info {
             text-align: left;
             flex-grow: 1;
-        }
-
-        .watermark-status {
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-            color: var(--cyan);
+            min-width: 0;
         }
 
         .watermark-filename {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .btn-remove-watermark {
-            background: transparent;
-            border: 1px solid #ff3333;
-            color: #ff3333;
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 5px;
-        }
-
-        .btn-remove-watermark:hover {
-            background: #ff3333;
-            color: #fff;
-            box-shadow: 0 0 10px #ff3333;
         }
 
         /* MODAL */
@@ -289,7 +266,7 @@
             z-index: 2000;
             display: none;
             flex-direction: column;
-            padding: 20px;
+            padding: clamp(10px, 3vw, 20px);
         }
 
         .modal-overlay.active {
@@ -305,6 +282,10 @@
             padding-bottom: 10px;
         }
 
+        .modal-header h2 {
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
+        }
+
         .editor-container {
             flex-grow: 1;
             background: #000;
@@ -318,44 +299,47 @@
             width: 100%;
             height: 100%;
             background: transparent;
-            color: #00ff41; /* Matrix green */
+            color: #00ff41;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 1.1rem;
-            padding: 20px;
+            font-size: 1rem;
+            padding: 15px;
             border: none;
             outline: none;
             resize: none;
         }
 
         .modal-footer {
-            display: flex;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-top: 15px;
         }
 
         .btn-modal {
-            flex: 1;
-            padding: 15px;
+            padding: 12px;
             border: 1px solid #fff;
             background: transparent;
             color: #fff;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
+            font-size: 0.75rem;
             transition: 0.3s;
         }
 
-        .btn-save { border-color: var(--cyan); color: var(--cyan); }
+        .btn-save { border-color: var(--cyan); color: var(--cyan); grid-column: span 1; }
         .btn-save:hover { background: var(--cyan); color: #000; }
-        .btn-close { border-color: var(--magenta); color: var(--magenta); }
+        .btn-close { border-color: var(--magenta); color: var(--magenta); grid-column: span 1; }
         .btn-close:hover { background: var(--magenta); color: #000; }
         
-        /* Specialized Clean Button */
-        .btn-clean { border-color: #ffaa00; color: #ffaa00; display: none; }
-        .btn-clean:hover { background: #ffaa00; color: #000; box-shadow: 0 0 15px #ffaa00; }
+        .btn-clean { border-color: #ffaa00; color: #ffaa00; grid-column: span 2; display: none; }
+        .btn-capitalize { border-color: #00ffaa; color: #00ffaa; grid-column: span 2; }
+        .btn-capitalize:hover { background: #00ffaa; color: #000; box-shadow: 0 0 15px #00ffaa; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .course-details-display { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -364,17 +348,17 @@
     <div class="container">
         <h1 class="header-title">SHARPNESS</h1>
         <div class="warning-note">
-            // CAUTION: SYSTEM AUTOMATICALLY UNBOLTS CONTENT TO PREVENT RECORD CLASHES. USE THE FORMAT EDITOR FOR PRECISION INDENTS.
+            // CAUTION: SYSTEM AUTOMATICALLY UNBOLTS CONTENT. USE THE FORMAT EDITOR FOR PRECISION INDENTS.
         </div>
         
         <div class="cyber-card">
             
             <div class="course-details-display">
-                <div>
-                    <span style="color:var(--magenta)">COURSE_ID:</span> <span id="displayCode">22UCS202</span><br>
-                    <span style="color:var(--magenta)">COURSE_NAME:</span> <span id="displayName">C PROGRAMMING</span>
+                <div style="min-width: 0;">
+                    <span style="color:var(--magenta)">ID:</span> <span id="displayCode">22UCS202</span><br>
+                    <span style="color:var(--magenta)">NAME:</span> <span id="displayName">C PROGRAMMING</span>
                 </div>
-                <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="height: fit-content;">UPDATE CONFIG</button>
+                <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="flex-shrink: 0;">CONFIG</button>
             </div>
 
             <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
@@ -404,11 +388,11 @@
                         <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF LINKED LIST" autocomplete="off">
                     </div>
 
-                    <!-- TEXT AREAS WITH FORMAT BUTTONS -->
+                    <!-- TEXT AREAS -->
                     <div class="input-group full-width">
                         <div class="label-row">
                             <label>Aim</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('aim')">Format Editor</button>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('aim')">Editor</button>
                         </div>
                         <textarea id="aim" required autocomplete="off"></textarea>
                     </div>
@@ -416,7 +400,7 @@
                     <div class="input-group full-width">
                         <div class="label-row">
                             <label>Algorithm</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('algorithm')">Format Editor</button>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('algorithm')">Editor</button>
                         </div>
                         <textarea id="algorithm" required autocomplete="off"></textarea>
                     </div>
@@ -424,7 +408,7 @@
                     <div class="input-group full-width">
                         <div class="label-row">
                             <label>Program / Source Code</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('program')">Code Editor</button>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('program')">Editor</button>
                         </div>
                         <textarea id="program" required autocomplete="off"></textarea>
                     </div>
@@ -432,7 +416,7 @@
                     <div class="input-group full-width">
                         <div class="label-row">
                             <label>Output</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('output')">Terminal Editor</button>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
                         </div>
                         <textarea id="output" required autocomplete="off"></textarea>
                     </div>
@@ -440,26 +424,25 @@
                     <div class="input-group full-width">
                         <div class="label-row">
                             <label>Result</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('result')">Format Editor</button>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('result')">Editor</button>
                         </div>
                         <textarea id="result" required autocomplete="off"></textarea>
                     </div>
 
-                    <!-- COOL WATERMARK SECTION -->
+                    <!-- WATERMARK SECTION -->
                     <div class="input-group full-width">
                         <label>Watermark Layer</label>
                         <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
                             <input type="file" id="watermark" accept="image/*" style="display: none;" autocomplete="off">
                             <div class="watermark-preview" id="wmPreviewBox">
-                                <span id="wmIcon" style="color:var(--blue); font-size: 1.5rem;">❖</span>
+                                <span id="wmIcon" style="color:var(--blue); font-size: 1.2rem;">❖</span>
                                 <img id="wmImg" style="display: none;">
                             </div>
                             <div class="watermark-info">
-                                <div class="watermark-status" id="wmStatus">STATUS: NO_ASSET_DETECTED</div>
-                                <div class="watermark-filename" id="wmFilename">LINK_SOURCE_IMAGE.png</div>
-                                <button type="button" id="wmRemoveBtn" class="btn-remove-watermark" style="display: none;" onclick="removeWatermark(event)">TERMINATE LINK</button>
+                                <div class="watermark-status" id="wmStatus" style="font-size: 0.6rem;">STATUS: EMPTY</div>
+                                <div class="watermark-filename" id="wmFilename" style="font-size: 0.7rem;">NO_ASSET.png</div>
+                                <button type="button" id="wmRemoveBtn" class="btn-remove-watermark" style="display: none;" onclick="removeWatermark(event)">REMOVE</button>
                             </div>
-                            <div style="font-size: 0.6rem; color: #555; writing-mode: vertical-rl;">SYSTEM_ASSET_V1.2</div>
                         </div>
                     </div>
                 </div>
@@ -469,26 +452,27 @@
         </div>
     </div>
 
-    <!-- FULLSCREEN EDITOR MODAL -->
+    <!-- EDITOR MODAL -->
     <div id="editorModal" class="modal-overlay">
         <div class="modal-header">
-            <h2 id="modalTitle" style="color:var(--cyan)">EDITOR // SECTION</h2>
-            <span style="color:#666; font-size: 0.8rem;">LINES ARE PRESERVED EXACTLY AS SHOWN</span>
+            <h2 id="modalTitle" style="color:var(--cyan)">EDITOR</h2>
+            <span style="color:#666; font-size: 0.6rem; text-align: right;">SYSTEM_LITERAL_INPUT</span>
         </div>
         <div class="editor-container">
             <textarea id="modalTextArea" class="modal-editor" spellcheck="false"></textarea>
         </div>
         <div class="modal-footer">
             <button id="cleanBtn" class="btn-modal btn-clean" onclick="purifyCode()">PURIFY CODE (NO INDENTS)</button>
-            <button class="btn-modal btn-save" onclick="saveEditor()">SAVE CHANGES</button>
-            <button class="btn-modal btn-close" onclick="closeEditor()">DISCARD</button>
+            <button id="capBtn" class="btn-modal btn-capitalize" onclick="capitalizeText()">SENTENCE CASE (A.a...)</button>
+            <button class="btn-modal btn-save" onclick="saveEditor()">SAVE</button>
+            <button class="btn-modal btn-close" onclick="closeEditor()">CLOSE</button>
         </div>
     </div>
 
-    <!-- COURSE CONFIG MODAL -->
-    <div id="courseModal" class="modal-overlay" style="justify-content: center; align-items: center; background: rgba(0,0,0,0.9);">
-        <div style="width: 400px; background: #111; border: 1px solid var(--magenta); padding: 30px; border-radius: 8px;">
-            <h3 style="color:var(--magenta); margin-bottom: 20px; text-align: center;">COURSE_CONFIG</h3>
+    <!-- CONFIG MODAL -->
+    <div id="courseModal" class="modal-overlay" style="justify-content: center; align-items: center;">
+        <div style="width: 100%; max-width: 400px; background: #111; border: 1px solid var(--magenta); padding: 25px; border-radius: 8px;">
+            <h3 style="color:var(--magenta); margin-bottom: 20px; text-align: center; font-size: 1rem;">COURSE_CONFIG</h3>
             <div class="input-group" style="margin-bottom: 15px;">
                 <label>Course Code</label>
                 <input type="text" id="modalCourseCode" value="22UCS202" autocomplete="off">
@@ -497,7 +481,7 @@
                 <label>Course Name</label>
                 <input type="text" id="modalCourseName" value="C PROGRAMMING" autocomplete="off">
             </div>
-            <button class="btn-main" onclick="saveCourseConfig()" style="padding: 12px; font-size: 0.9rem;">UPDATE SYSTEM</button>
+            <button class="btn-main" onclick="saveCourseConfig()" style="padding: 12px; font-size: 0.9rem; margin: 0;">UPDATE</button>
         </div>
     </div>
 
@@ -517,19 +501,17 @@
             document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
-            // Show/Hide Code Specific Buttons
-            const cleanBtn = document.getElementById('cleanBtn');
-            if (id === 'program' || id === 'algorithm' || id === 'output') {
-                cleanBtn.style.display = 'block';
-            } else {
-                cleanBtn.style.display = 'none';
-            }
+            // Show/Hide Specific Tool Buttons
+            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm' || id === 'output') ? 'block' : 'none';
+            document.getElementById('capBtn').style.display = (id === 'program') ? 'none' : 'block';
 
             document.getElementById('editorModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeEditor() {
             document.getElementById('editorModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function saveEditor() {
@@ -537,15 +519,21 @@
             closeEditor();
         }
 
-        // Logic to remove indents and empty lines
         function purifyCode() {
             const area = document.getElementById('modalTextArea');
-            const lines = area.value.split('\n');
-            const purified = lines
-                .map(line => line.trim()) // Remove all leading/trailing whitespace (indents)
-                .filter(line => line.length > 0) // Remove empty lines
-                .join('\n');
-            area.value = purified;
+            area.value = area.value.split('\n').map(l => l.trim()).filter(l => l.length > 0).join('\n');
+        }
+
+        function capitalizeText() {
+            const area = document.getElementById('modalTextArea');
+            if (!area.value) return;
+            
+            // Smarter Sentence case:
+            // 1. Convert to lower case first for consistency (optional, but requested for AI clean up)
+            // 2. Capitalize at start of text (^\s*)
+            // 3. Capitalize after [.!?] followed by space ([.!?]\s+)
+            // 4. Capitalize at start of any new line (\n\s*)
+            area.value = area.value.toLowerCase().replace(/(^\s*|[.!?]\s+|\n\s*)([a-z])/g, m => m.toUpperCase());
         }
 
         function openCourseModal() {
@@ -569,16 +557,12 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     watermarkDataUrl = event.target.result;
-                    // Update UI
                     document.getElementById('wmImg').src = watermarkDataUrl;
                     document.getElementById('wmImg').style.display = 'block';
                     document.getElementById('wmIcon').style.display = 'none';
-                    document.getElementById('wmStatus').innerText = "STATUS: ASSET_LINKED_SUCCESS";
-                    document.getElementById('wmStatus').style.color = "var(--magenta)";
+                    document.getElementById('wmStatus').innerText = "LINKED";
                     document.getElementById('wmFilename').innerText = file.name;
                     document.getElementById('wmRemoveBtn').style.display = 'inline-block';
-                    document.getElementById('wmPreviewBox').style.boxShadow = "0 0 20px var(--magenta)";
-                    document.getElementById('wmPreviewBox').style.borderColor = "var(--magenta)";
                 };
                 reader.readAsDataURL(file);
             }
@@ -590,15 +574,11 @@
             document.getElementById('watermark').value = "";
             document.getElementById('wmImg').style.display = 'none';
             document.getElementById('wmIcon').style.display = 'block';
-            document.getElementById('wmStatus').innerText = "STATUS: NO_ASSET_DETECTED";
-            document.getElementById('wmStatus').style.color = "var(--cyan)";
-            document.getElementById('wmFilename').innerText = "LINK_SOURCE_IMAGE.png";
+            document.getElementById('wmStatus').innerText = "EMPTY";
+            document.getElementById('wmFilename').innerText = "NO_ASSET.png";
             document.getElementById('wmRemoveBtn').style.display = 'none';
-            document.getElementById('wmPreviewBox').style.boxShadow = "0 0 10px var(--cyan)";
-            document.getElementById('wmPreviewBox').style.borderColor = "var(--cyan)";
         }
 
-        // Un-bolding utility for AI pasted content
         function normalizeText(text) {
             if (!text) return "";
             return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1');
@@ -607,7 +587,7 @@
         async function generatePDF(event) {
             event.preventDefault();
             const btn = document.querySelector('.btn-main');
-            btn.innerText = "COMPILING DATA... >_";
+            btn.innerText = "PROCESSING... >_";
             btn.disabled = true;
 
             try {
@@ -628,8 +608,8 @@
                     hasDosFont = true;
                 } catch(e) { console.warn("Font load failed."); }
 
-                const name = document.getElementById('studentName').value;
-                const regNo = document.getElementById('regNo').value;
+                const nameValue = document.getElementById('studentName').value;
+                const regNoValue = document.getElementById('regNo').value;
                 const expNo = document.getElementById('expNo').value;
                 const date = document.getElementById('expDate').value.split('-').reverse().join('-');
                 const title = document.getElementById('expTitle').value;
@@ -649,20 +629,19 @@
                     doc.setLineWidth(0.5);
                     doc.setDrawColor(0, 0, 0);
                     doc.rect(15, 20, 180, 257);
+                    
                     doc.setFont("times", "bold");
                     doc.setFontSize(14);
-                    doc.text(name, 15, 15);
-                    doc.text(regNo, 195, 15, { align: 'right' });
+                    doc.text("Name : " + nameValue, 15, 15);
+                    doc.text("Reg no : " + regNoValue, 195, 15, { align: 'right' });
                     doc.text(`${config.courseCode} – ${config.courseName}`, 195, 283, { align: 'right' });
 
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
-                        // Opacity increased to 0.15 as requested
                         doc.setGState(new doc.GState({opacity: 0.15})); 
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
-                    // Reset to a known default state for content
                     doc.setFont("times", "normal");
                     doc.setFontSize(12);
                 }
@@ -676,7 +655,6 @@
                 }
 
                 drawTemplate();
-                // We re-set bold specifically for the boxes after drawTemplate resets it
                 doc.setFont("times", "bold");
                 doc.setFontSize(14);
                 doc.rect(20, 25, 45, 10);
@@ -715,11 +693,9 @@
 
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.split('\n');
-                        
                         let maxWidth = 0;
                         let wrapped = [];
                         
-                        // Temporarily set font to calculate widths accurately
                         if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
                         else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
 
@@ -733,10 +709,8 @@
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            // Re-apply terminal font after potential break
                             if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
                             else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
-
                             doc.setFillColor(0, 0, 0);
                             doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
                             doc.setTextColor(255, 255, 255);
@@ -753,7 +727,6 @@
                             const wrapped = doc.splitTextToSize(p, 170);
                             wrapped.forEach(l => {
                                 checkBreak(1);
-                                // Explicitly re-apply normal font after break to overwrite header bold state
                                 doc.setFont("times", "normal");
                                 doc.setFontSize(12);
                                 doc.text(l, 20, currentY);
@@ -764,10 +737,10 @@
                     }
                 });
 
-                doc.save(`${regNo}_Record.pdf`);
+                doc.save(`${regNoValue}_Record.pdf`);
             } catch(err) {
                 console.error(err);
-                alert("Compilation failed.");
+                alert("Generation failed.");
             } finally {
                 btn.innerText = "GENERATE RECORD PDF // EXECUTE";
                 btn.disabled = false;
