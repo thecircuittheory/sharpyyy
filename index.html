@@ -342,19 +342,24 @@
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
         .btn-save { border-color: var(--cyan); color: var(--cyan); }
         .btn-save:hover { background: var(--cyan); color: #000; }
         .btn-close { border-color: var(--magenta); color: var(--magenta); }
         .btn-close:hover { background: var(--magenta); color: #000; }
+        
+        /* Specialized Clean Button */
+        .btn-clean { border-color: #ffaa00; color: #ffaa00; display: none; }
+        .btn-clean:hover { background: #ffaa00; color: #000; box-shadow: 0 0 15px #ffaa00; }
 
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body>
+<body autocomplete="off">
 
     <div class="container">
         <h1 class="header-title">SHARPNESS</h1>
@@ -372,31 +377,31 @@
                 <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="height: fit-content;">UPDATE CONFIG</button>
             </div>
 
-            <form id="recordForm" onsubmit="generatePDF(event)">
+            <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
                 <div class="form-grid">
                     <div class="input-group">
                         <label>Student Name</label>
-                        <input type="text" id="studentName" required placeholder="JOHN DOE">
+                        <input type="text" id="studentName" required placeholder="JOHN DOE" autocomplete="off">
                     </div>
                     
                     <div class="input-group">
                         <label>Register Number</label>
-                        <input type="text" id="regNo" required placeholder="123456789">
+                        <input type="text" id="regNo" required placeholder="123456789" autocomplete="off">
                     </div>
 
                     <div class="input-group">
                         <label>Experiment Number</label>
-                        <input type="text" id="expNo" required placeholder="01">
+                        <input type="text" id="expNo" required placeholder="01" autocomplete="off">
                     </div>
 
                     <div class="input-group">
                         <label>Date</label>
-                        <input type="date" id="expDate" required>
+                        <input type="date" id="expDate" required autocomplete="off">
                     </div>
 
                     <div class="input-group full-width">
                         <label>Experiment Title</label>
-                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF LINKED LIST">
+                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF LINKED LIST" autocomplete="off">
                     </div>
 
                     <!-- TEXT AREAS WITH FORMAT BUTTONS -->
@@ -405,7 +410,7 @@
                             <label>Aim</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('aim')">Format Editor</button>
                         </div>
-                        <textarea id="aim" required></textarea>
+                        <textarea id="aim" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -413,7 +418,7 @@
                             <label>Algorithm</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('algorithm')">Format Editor</button>
                         </div>
-                        <textarea id="algorithm" required></textarea>
+                        <textarea id="algorithm" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -421,7 +426,7 @@
                             <label>Program / Source Code</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('program')">Code Editor</button>
                         </div>
-                        <textarea id="program" required></textarea>
+                        <textarea id="program" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -429,7 +434,7 @@
                             <label>Output</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('output')">Terminal Editor</button>
                         </div>
-                        <textarea id="output" required></textarea>
+                        <textarea id="output" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -437,14 +442,14 @@
                             <label>Result</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('result')">Format Editor</button>
                         </div>
-                        <textarea id="result" required></textarea>
+                        <textarea id="result" required autocomplete="off"></textarea>
                     </div>
 
                     <!-- COOL WATERMARK SECTION -->
                     <div class="input-group full-width">
                         <label>Watermark Layer</label>
                         <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
-                            <input type="file" id="watermark" accept="image/*" style="display: none;">
+                            <input type="file" id="watermark" accept="image/*" style="display: none;" autocomplete="off">
                             <div class="watermark-preview" id="wmPreviewBox">
                                 <span id="wmIcon" style="color:var(--blue); font-size: 1.5rem;">❖</span>
                                 <img id="wmImg" style="display: none;">
@@ -474,6 +479,7 @@
             <textarea id="modalTextArea" class="modal-editor" spellcheck="false"></textarea>
         </div>
         <div class="modal-footer">
+            <button id="cleanBtn" class="btn-modal btn-clean" onclick="purifyCode()">PURIFY CODE (NO INDENTS)</button>
             <button class="btn-modal btn-save" onclick="saveEditor()">SAVE CHANGES</button>
             <button class="btn-modal btn-close" onclick="closeEditor()">DISCARD</button>
         </div>
@@ -485,11 +491,11 @@
             <h3 style="color:var(--magenta); margin-bottom: 20px; text-align: center;">COURSE_CONFIG</h3>
             <div class="input-group" style="margin-bottom: 15px;">
                 <label>Course Code</label>
-                <input type="text" id="modalCourseCode" value="22UCS202">
+                <input type="text" id="modalCourseCode" value="22UCS202" autocomplete="off">
             </div>
             <div class="input-group" style="margin-bottom: 25px;">
                 <label>Course Name</label>
-                <input type="text" id="modalCourseName" value="C PROGRAMMING">
+                <input type="text" id="modalCourseName" value="C PROGRAMMING" autocomplete="off">
             </div>
             <button class="btn-main" onclick="saveCourseConfig()" style="padding: 12px; font-size: 0.9rem;">UPDATE SYSTEM</button>
         </div>
@@ -510,6 +516,15 @@
             currentEditingId = id;
             document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
+            
+            // Show/Hide Code Specific Buttons
+            const cleanBtn = document.getElementById('cleanBtn');
+            if (id === 'program' || id === 'algorithm' || id === 'output') {
+                cleanBtn.style.display = 'block';
+            } else {
+                cleanBtn.style.display = 'none';
+            }
+
             document.getElementById('editorModal').classList.add('active');
         }
 
@@ -520,6 +535,17 @@
         function saveEditor() {
             document.getElementById(currentEditingId).value = document.getElementById('modalTextArea').value;
             closeEditor();
+        }
+
+        // Logic to remove indents and empty lines
+        function purifyCode() {
+            const area = document.getElementById('modalTextArea');
+            const lines = area.value.split('\n');
+            const purified = lines
+                .map(line => line.trim()) // Remove all leading/trailing whitespace (indents)
+                .filter(line => line.length > 0) // Remove empty lines
+                .join('\n');
+            area.value = purified;
         }
 
         function openCourseModal() {
@@ -635,6 +661,9 @@
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
+                    // Reset to a known default state for content
+                    doc.setFont("times", "normal");
+                    doc.setFontSize(12);
                 }
 
                 function checkBreak(linesNeeded = 1) {
@@ -646,10 +675,12 @@
                 }
 
                 drawTemplate();
+                // We re-set bold specifically for the boxes after drawTemplate resets it
+                doc.setFont("times", "bold");
+                doc.setFontSize(14);
                 doc.rect(20, 25, 45, 10);
                 doc.rect(20, 35, 45, 10);
                 doc.rect(65, 25, 125, 20);
-                doc.setFont("times", "bold");
                 doc.text(`Exp.no: ${expNo}`, 22, 31.5);
                 doc.text(`Date: ${date}`, 22, 41.5);
 
@@ -683,11 +714,14 @@
 
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.split('\n');
+                        
+                        let maxWidth = 0;
+                        let wrapped = [];
+                        
+                        // Temporarily set font to calculate widths accurately
                         if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
                         else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
 
-                        let maxWidth = 0;
-                        let wrapped = [];
                         lines.forEach(l => {
                             const wr = doc.splitTextToSize(l, 165);
                             wr.forEach(wl => {
@@ -698,6 +732,10 @@
 
                         wrapped.forEach(l => {
                             checkBreak(1);
+                            // Re-apply terminal font after potential break
+                            if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
+                            else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
+
                             doc.setFillColor(0, 0, 0);
                             doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
                             doc.setTextColor(255, 255, 255);
@@ -714,6 +752,9 @@
                             const wrapped = doc.splitTextToSize(p, 170);
                             wrapped.forEach(l => {
                                 checkBreak(1);
+                                // Explicitly re-apply normal font after break to overwrite header bold state
+                                doc.setFont("times", "normal");
+                                doc.setFontSize(12);
                                 doc.text(l, 20, currentY);
                                 currentY += lineSpacing;
                             });
