@@ -657,7 +657,8 @@
 
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
-                        doc.setGState(new doc.GState({opacity: 0.06})); 
+                        // Opacity increased to 0.15 as requested
+                        doc.setGState(new doc.GState({opacity: 0.15})); 
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
