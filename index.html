@@ -8,11 +8,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --bg-color: #0f0f1a;
+            --bg-color: #05050a;
             --cyan: #00f3ff;
             --magenta: #ff00ff;
             --blue: #0033ff;
-            --glass-bg: rgba(15, 15, 26, 0.75);
+            --glass-bg: rgba(10, 10, 20, 0.85);
             --border-glow: 0 0 10px var(--cyan), inset 0 0 10px var(--cyan);
             --focus-glow: 0 0 15px var(--magenta), inset 0 0 10px var(--magenta);
         }
@@ -30,7 +30,7 @@
             min-height: 100vh;
             padding: 40px 20px;
             overflow-x: hidden;
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            background: radial-gradient(circle at center, #101025 0%, #05050a 100%);
             position: relative;
         }
 
@@ -40,22 +40,22 @@
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -1;
-            transform: perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            transform: perspective(1000px) rotateX(60deg) translateY(-100px);
             animation: gridMove 20s linear infinite;
             pointer-events: none;
         }
 
         @keyframes gridMove {
-            0% { transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px); }
-            100% { transform: perspective(1000px) rotateX(60deg) translateY(40px) translateZ(-200px); }
+            0% { transform: perspective(1000px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(1000px) rotateX(60deg) translateY(50px); }
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -63,35 +63,34 @@
 
         .header-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 900;
             color: #fff;
-            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--blue);
-            margin-bottom: 40px;
-            letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+            margin-bottom: 10px;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            animation: pulseText 2s infinite alternate;
         }
 
-        @keyframes pulseText {
-            0% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--blue); }
-            100% { text-shadow: 0 0 15px var(--cyan), 0 0 30px var(--cyan), 0 0 60px var(--blue); }
+        .warning-note {
+            text-align: center;
+            color: var(--magenta);
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            padding: 12px;
+            border: 1px solid var(--magenta);
+            background: rgba(255, 0, 255, 0.05);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
         }
 
         .cyber-card {
             background: var(--glass-bg);
             border: 1px solid var(--cyan);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 40px;
             box-shadow: var(--border-glow);
-            backdrop-filter: blur(10px);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); box-shadow: 0 0 20px var(--cyan), inset 0 0 15px var(--cyan); }
-            100% { transform: translateY(0px); }
+            backdrop-filter: blur(15px);
         }
 
         .form-grid {
@@ -107,124 +106,251 @@
         .input-group {
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         label {
-            color: var(--magenta);
-            font-size: 0.9rem;
+            color: var(--cyan);
+            font-size: 0.85rem;
             font-weight: bold;
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+        }
+
+        .btn-mini-format {
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid var(--magenta);
+            color: var(--magenta);
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-mini-format:hover {
+            background: var(--magenta);
+            color: #fff;
+            box-shadow: 0 0 10px var(--magenta);
         }
 
         input[type="text"], 
         input[type="date"],
-        textarea,
-        input[type="file"] {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--blue);
-            color: var(--cyan);
-            padding: 12px 15px;
-            border-radius: 6px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
         textarea {
-            resize: vertical;
-            min-height: 120px;
-            line-height: 1.5;
-        }
-
-        input:focus, textarea:focus {
-            border-color: var(--magenta);
-            box-shadow: var(--focus-glow);
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--blue);
             color: #fff;
-        }
-
-        input[type="file"] {
-            padding: 9px;
-            color: var(--magenta);
-            cursor: pointer;
-        }
-        
-        input[type="file"]::file-selector-button {
-            background: transparent;
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            padding: 5px 10px;
+            padding: 12px;
             border-radius: 4px;
-            cursor: pointer;
-            margin-right: 15px;
+            font-size: 0.95rem;
+            outline: none;
             transition: 0.3s;
         }
 
-        input[type="file"]::file-selector-button:hover {
-            background: var(--cyan);
-            color: #000;
+        textarea {
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--cyan);
             box-shadow: 0 0 10px var(--cyan);
         }
 
-        .btn-generate {
+        .btn-main {
             width: 100%;
             background: transparent;
             border: 2px solid var(--cyan);
             color: var(--cyan);
-            padding: 18px;
-            font-size: 1.2rem;
-            font-weight: 900;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            border-radius: 8px;
+            letter-spacing: 4px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--cyan);
+        }
+
+        .course-details-display {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px dashed var(--cyan);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* WATERMARK SECTION UPGRADE */
+        .watermark-zone {
+            border: 2px dashed var(--blue);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            background: rgba(0, 51, 255, 0.05);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            min-height: 100px;
+        }
+
+        .watermark-zone:hover {
+            border-color: var(--cyan);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .watermark-preview {
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--cyan);
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .watermark-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            opacity: 0.8;
+        }
+
+        .watermark-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .watermark-status {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            color: var(--cyan);
+        }
+
+        .watermark-filename {
+            font-size: 0.9rem;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .btn-remove-watermark {
+            background: transparent;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+
+        .btn-remove-watermark:hover {
+            background: #ff3333;
+            color: #fff;
+            box-shadow: 0 0 10px #ff3333;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--magenta);
+            padding-bottom: 10px;
+        }
+
+        .editor-container {
+            flex-grow: 1;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
             position: relative;
             overflow: hidden;
         }
 
-        .btn-generate::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
-            transition: all 0.5s ease;
+        .modal-editor {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            color: #00ff41; /* Matrix green */
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1.1rem;
+            padding: 20px;
+            border: none;
+            outline: none;
+            resize: none;
         }
 
-        .btn-generate:hover {
-            background: var(--cyan);
-            color: var(--bg-color);
-            box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
-            text-shadow: none;
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
         }
 
-        .btn-generate:hover::before {
-            left: 100%;
+        .btn-modal {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #fff;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
-        /* Custom scrollbar for textareas */
-        textarea::-webkit-scrollbar {
-            width: 8px;
-        }
-        textarea::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 4px;
-        }
-        textarea::-webkit-scrollbar-thumb {
-            background: var(--cyan);
-            border-radius: 4px;
-            box-shadow: 0 0 5px var(--cyan);
-        }
+        .btn-save { border-color: var(--cyan); color: var(--cyan); }
+        .btn-save:hover { background: var(--cyan); color: #000; }
+        .btn-close { border-color: var(--magenta); color: var(--magenta); }
+        .btn-close:hover { background: var(--magenta); color: #000; }
 
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -232,10 +358,21 @@
 
     <div class="container">
         <h1 class="header-title">SHARPNESS</h1>
+        <div class="warning-note">
+            // CAUTION: SYSTEM AUTOMATICALLY UNBOLTS CONTENT TO PREVENT RECORD CLASHES. USE THE FORMAT EDITOR FOR PRECISION INDENTS.
+        </div>
         
         <div class="cyber-card">
+            
+            <div class="course-details-display">
+                <div>
+                    <span style="color:var(--magenta)">COURSE_ID:</span> <span id="displayCode">22UCS202</span><br>
+                    <span style="color:var(--magenta)">COURSE_NAME:</span> <span id="displayName">C PROGRAMMING</span>
+                </div>
+                <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="height: fit-content;">UPDATE CONFIG</button>
+            </div>
+
             <form id="recordForm" onsubmit="generatePDF(event)">
-                
                 <div class="form-grid">
                     <div class="input-group">
                         <label>Student Name</label>
@@ -259,299 +396,338 @@
 
                     <div class="input-group full-width">
                         <label>Experiment Title</label>
-                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF...">
+                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF LINKED LIST">
                     </div>
 
-                    <div class="input-group">
-                        <label>Course Code</label>
-                        <input type="text" id="courseCode" required placeholder="CS101">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Course Name</label>
-                        <input type="text" id="courseName" required placeholder="DATA STRUCTURES LAB">
+                    <!-- TEXT AREAS WITH FORMAT BUTTONS -->
+                    <div class="input-group full-width">
+                        <div class="label-row">
+                            <label>Aim</label>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('aim')">Format Editor</button>
+                        </div>
+                        <textarea id="aim" required></textarea>
                     </div>
 
                     <div class="input-group full-width">
-                        <label>Aim</label>
-                        <textarea id="aim" required placeholder="To write a program to..."></textarea>
+                        <div class="label-row">
+                            <label>Algorithm</label>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('algorithm')">Format Editor</button>
+                        </div>
+                        <textarea id="algorithm" required></textarea>
                     </div>
 
                     <div class="input-group full-width">
-                        <label>Algorithm</label>
-                        <textarea id="algorithm" required placeholder="Step 1: Start..."></textarea>
+                        <div class="label-row">
+                            <label>Program / Source Code</label>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('program')">Code Editor</button>
+                        </div>
+                        <textarea id="program" required></textarea>
                     </div>
 
                     <div class="input-group full-width">
-                        <label>Program / Source Code</label>
-                        <textarea id="program" required placeholder="#include <stdio.h>..."></textarea>
+                        <div class="label-row">
+                            <label>Output</label>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('output')">Terminal Editor</button>
+                        </div>
+                        <textarea id="output" required></textarea>
                     </div>
 
                     <div class="input-group full-width">
-                        <label>Output (Turbo C++ Rendered)</label>
-                        <textarea id="output" required placeholder="Enter value: 5&#10;Result: 25"></textarea>
+                        <div class="label-row">
+                            <label>Result</label>
+                            <button type="button" class="btn-mini-format" onclick="openEditor('result')">Format Editor</button>
+                        </div>
+                        <textarea id="result" required></textarea>
                     </div>
 
+                    <!-- COOL WATERMARK SECTION -->
                     <div class="input-group full-width">
-                        <label>Result</label>
-                        <textarea id="result" required placeholder="Thus the program was executed successfully..."></textarea>
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Watermark Image (Optional)</label>
-                        <input type="file" id="watermark" accept="image/*">
+                        <label>Watermark Layer</label>
+                        <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
+                            <input type="file" id="watermark" accept="image/*" style="display: none;">
+                            <div class="watermark-preview" id="wmPreviewBox">
+                                <span id="wmIcon" style="color:var(--blue); font-size: 1.5rem;">❖</span>
+                                <img id="wmImg" style="display: none;">
+                            </div>
+                            <div class="watermark-info">
+                                <div class="watermark-status" id="wmStatus">STATUS: NO_ASSET_DETECTED</div>
+                                <div class="watermark-filename" id="wmFilename">LINK_SOURCE_IMAGE.png</div>
+                                <button type="button" id="wmRemoveBtn" class="btn-remove-watermark" style="display: none;" onclick="removeWatermark(event)">TERMINATE LINK</button>
+                            </div>
+                            <div style="font-size: 0.6rem; color: #555; writing-mode: vertical-rl;">SYSTEM_ASSET_V1.2</div>
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-generate">Initialize Compilation >_</button>
+                <button type="submit" class="btn-main">GENERATE RECORD PDF // EXECUTE</button>
             </form>
         </div>
     </div>
 
+    <!-- FULLSCREEN EDITOR MODAL -->
+    <div id="editorModal" class="modal-overlay">
+        <div class="modal-header">
+            <h2 id="modalTitle" style="color:var(--cyan)">EDITOR // SECTION</h2>
+            <span style="color:#666; font-size: 0.8rem;">LINES ARE PRESERVED EXACTLY AS SHOWN</span>
+        </div>
+        <div class="editor-container">
+            <textarea id="modalTextArea" class="modal-editor" spellcheck="false"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-save" onclick="saveEditor()">SAVE CHANGES</button>
+            <button class="btn-modal btn-close" onclick="closeEditor()">DISCARD</button>
+        </div>
+    </div>
+
+    <!-- COURSE CONFIG MODAL -->
+    <div id="courseModal" class="modal-overlay" style="justify-content: center; align-items: center; background: rgba(0,0,0,0.9);">
+        <div style="width: 400px; background: #111; border: 1px solid var(--magenta); padding: 30px; border-radius: 8px;">
+            <h3 style="color:var(--magenta); margin-bottom: 20px; text-align: center;">COURSE_CONFIG</h3>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>Course Code</label>
+                <input type="text" id="modalCourseCode" value="22UCS202">
+            </div>
+            <div class="input-group" style="margin-bottom: 25px;">
+                <label>Course Name</label>
+                <input type="text" id="modalCourseName" value="C PROGRAMMING">
+            </div>
+            <button class="btn-main" onclick="saveCourseConfig()" style="padding: 12px; font-size: 0.9rem;">UPDATE SYSTEM</button>
+        </div>
+    </div>
+
     <script>
+        let currentEditingId = '';
         let watermarkDataUrl = null;
 
-        // Handle Image Upload and convert to Base64
+        // Configuration
+        let config = {
+            courseCode: "22UCS202",
+            courseName: "C PROGRAMMING"
+        };
+
+        // Modal Controls
+        function openEditor(id) {
+            currentEditingId = id;
+            document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
+            document.getElementById('modalTextArea').value = document.getElementById(id).value;
+            document.getElementById('editorModal').classList.add('active');
+        }
+
+        function closeEditor() {
+            document.getElementById('editorModal').classList.remove('active');
+        }
+
+        function saveEditor() {
+            document.getElementById(currentEditingId).value = document.getElementById('modalTextArea').value;
+            closeEditor();
+        }
+
+        function openCourseModal() {
+            document.getElementById('modalCourseCode').value = config.courseCode;
+            document.getElementById('modalCourseName').value = config.courseName;
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function saveCourseConfig() {
+            config.courseCode = document.getElementById('modalCourseCode').value;
+            config.courseName = document.getElementById('modalCourseName').value;
+            document.getElementById('displayCode').innerText = config.courseCode;
+            document.getElementById('displayName').innerText = config.courseName;
+            document.getElementById('courseModal').classList.remove('active');
+        }
+
+        // Watermark Logic
         document.getElementById('watermark').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     watermarkDataUrl = event.target.result;
+                    // Update UI
+                    document.getElementById('wmImg').src = watermarkDataUrl;
+                    document.getElementById('wmImg').style.display = 'block';
+                    document.getElementById('wmIcon').style.display = 'none';
+                    document.getElementById('wmStatus').innerText = "STATUS: ASSET_LINKED_SUCCESS";
+                    document.getElementById('wmStatus').style.color = "var(--magenta)";
+                    document.getElementById('wmFilename').innerText = file.name;
+                    document.getElementById('wmRemoveBtn').style.display = 'inline-block';
+                    document.getElementById('wmPreviewBox').style.boxShadow = "0 0 20px var(--magenta)";
+                    document.getElementById('wmPreviewBox').style.borderColor = "var(--magenta)";
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Main PDF Generation Logic
+        function removeWatermark(event) {
+            event.stopPropagation();
+            watermarkDataUrl = null;
+            document.getElementById('watermark').value = "";
+            document.getElementById('wmImg').style.display = 'none';
+            document.getElementById('wmIcon').style.display = 'block';
+            document.getElementById('wmStatus').innerText = "STATUS: NO_ASSET_DETECTED";
+            document.getElementById('wmStatus').style.color = "var(--cyan)";
+            document.getElementById('wmFilename').innerText = "LINK_SOURCE_IMAGE.png";
+            document.getElementById('wmRemoveBtn').style.display = 'none';
+            document.getElementById('wmPreviewBox').style.boxShadow = "0 0 10px var(--cyan)";
+            document.getElementById('wmPreviewBox').style.borderColor = "var(--cyan)";
+        }
+
+        // Un-bolding utility for AI pasted content
+        function normalizeText(text) {
+            if (!text) return "";
+            return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1');
+        }
+
         async function generatePDF(event) {
             event.preventDefault();
-
-            const btn = document.querySelector('.btn-generate');
-            btn.innerText = "FETCHING DOS FONT & COMPILING... >_";
+            const btn = document.querySelector('.btn-main');
+            btn.innerText = "COMPILING DATA... >_";
             btn.disabled = true;
 
             try {
-                // Extract window.jspdf class
                 const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4
+                const doc = new jsPDF('p', 'mm', 'a4');
 
-                // Fetch and inject a retro terminal font dynamically
-                // jsPDF requires fonts with a very standard Unicode cmap. We're using VT323 from Google Fonts 
-                // which is heavily normalized and guaranteed to parse correctly in jsPDF, providing that DOS/Terminal vibe.
+                // Load Retro Font
                 let hasDosFont = false;
                 try {
                     const fontUrl = 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/vt323/VT323-Regular.ttf';
                     const fontResponse = await fetch(fontUrl);
                     const fontBuffer = await fontResponse.arrayBuffer();
-                    
                     let binary = '';
                     const bytes = new Uint8Array(fontBuffer);
-                    const len = bytes.byteLength;
-                    for (let i = 0; i < len; i++) {
-                        binary += String.fromCharCode(bytes[i]);
-                    }
-                    const base64Font = window.btoa(binary);
-                    
-                    doc.addFileToVFS('VT323.ttf', base64Font);
+                    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                    doc.addFileToVFS('VT323.ttf', window.btoa(binary));
                     doc.addFont('VT323.ttf', 'VT323', 'normal');
-                    
-                    // Safety check: Test if font loaded with proper widths. 
-                    doc.setFont('VT323', 'normal');
-                    doc.getTextWidth('test'); 
-                    
                     hasDosFont = true;
-                    doc.setFont('times', 'normal'); // Reset for normal text
-                } catch(e) {
-                    console.warn("Could not load retro font smoothly, using fallback Courier.", e);
-                    hasDosFont = false;
-                    doc.setFont('times', 'normal'); // Ensure we are reset
-                }
+                } catch(e) { console.warn("Font load failed."); }
 
-                // Fetch Form Data
                 const name = document.getElementById('studentName').value;
                 const regNo = document.getElementById('regNo').value;
                 const expNo = document.getElementById('expNo').value;
                 const date = document.getElementById('expDate').value.split('-').reverse().join('-');
                 const title = document.getElementById('expTitle').value;
-                const courseCode = document.getElementById('courseCode').value;
-                const courseName = document.getElementById('courseName').value;
 
                 const sections = [
-                    { title: 'AIM :', content: document.getElementById('aim').value, type: 'NORMAL' },
-                    { title: 'ALGORITHM :', content: document.getElementById('algorithm').value, type: 'ALGO' },
+                    { title: 'AIM :', content: normalizeText(document.getElementById('aim').value), type: 'NORMAL' },
+                    { title: 'ALGORITHM :', content: normalizeText(document.getElementById('algorithm').value), type: 'NORMAL' },
                     { title: 'PROGRAM :', content: document.getElementById('program').value, type: 'NORMAL' },
                     { title: 'OUTPUT :', content: document.getElementById('output').value, type: 'OUTPUT' },
-                    { title: 'RESULT :', content: document.getElementById('result').value, type: 'NORMAL' }
+                    { title: 'RESULT :', content: normalizeText(document.getElementById('result').value), type: 'NORMAL' }
                 ];
 
-                // Setup Page Metrics
                 const lineSpacing = 7;
-                const maxPageY = 270; // Bottom boundary trigger for page break
-                let currentY = 55; // Start printing content below header boxes
+                let currentY = 55;
 
-                // Function to draw static page template elements
-                function drawPageTemplate() {
-                    // 1. Draw outer border rectangle (Smaller Margins: X=15, Y=20, W=180, H=257)
+                function drawTemplate() {
                     doc.setLineWidth(0.5);
                     doc.setDrawColor(0, 0, 0);
                     doc.rect(15, 20, 180, 257);
-
-                    // 2. Header (Name & RegNo above the border)
                     doc.setFont("times", "bold");
                     doc.setFontSize(14);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(name, 15, 15); // Left aligned above border
-                    doc.text(regNo, 195, 15, { align: 'right' }); // Right aligned above border
+                    doc.text(name, 15, 15);
+                    doc.text(regNo, 195, 15, { align: 'right' });
+                    doc.text(`${config.courseCode} – ${config.courseName}`, 195, 283, { align: 'right' });
 
-                    // 3. Draw Course Footer (Right aligned below the border)
-                    doc.setFont("times", "bold");
-                    doc.setFontSize(14);
-                    const footerText = `${courseCode} – ${courseName}`;
-                    doc.text(footerText, 195, 283, { align: 'right' }); // Right aligned footer
-
-                    // 4. Draw Watermark if present
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
                         doc.setGState(new doc.GState({opacity: 0.06})); 
-                        // Centered: X = 15 + (180-130)/2 = 40. Y = 20 + (257-130)/2 = 83.5
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
                 }
 
-                // Function to handle page breaks dynamically
-                function checkPageBreak(linesNeeded = 1) {
-                    if (currentY + (linesNeeded * lineSpacing) > maxPageY) {
+                function checkBreak(linesNeeded = 1) {
+                    if (currentY + (linesNeeded * lineSpacing) > 270) {
                         doc.addPage();
-                        drawPageTemplate();
-                        currentY = 30; // Reset Y below top border for subsequent pages
+                        drawTemplate();
+                        currentY = 30;
                     }
                 }
 
-                // --- FIRST PAGE INITIALIZATION ---
-                drawPageTemplate();
-
-                // First Page Header Elements (Structured Experiment Boxes)
-                doc.setLineWidth(0.5);
-                doc.setDrawColor(0, 0, 0);
-                
-                // Boxes start at X=20, end at X=190 (leaving 5mm padding from 15 and 195 border)
-                doc.rect(20, 25, 45, 10); // Exp No box
-                doc.rect(20, 35, 45, 10); // Date box
-                doc.rect(65, 25, 125, 20); // Title box (Width = 125. Ends at 65+125 = 190)
-
-                // Fill Box Content
+                drawTemplate();
+                doc.rect(20, 25, 45, 10);
+                doc.rect(20, 35, 45, 10);
+                doc.rect(65, 25, 125, 20);
                 doc.setFont("times", "bold");
-                doc.setFontSize(14);
                 doc.text(`Exp.no: ${expNo}`, 22, 31.5);
                 doc.text(`Date: ${date}`, 22, 41.5);
 
-                // Center Title Vertically in the large box
-                doc.setFont("times", "bold");
-                doc.setFontSize(14);
-                const splitTitle = doc.splitTextToSize(title, 115);
-                // Center in title box: 65 + (125/2) = 127.5. Y center of 25 to 45 is 35.
-                doc.text(splitTitle, 127.5, 35, { align: 'center', baseline: 'middle' });
+                let tSize = 14;
+                doc.setFontSize(tSize);
+                while(doc.getTextWidth(title) > 120 && tSize > 8) {
+                    tSize -= 0.5;
+                    doc.setFontSize(tSize);
+                }
+                doc.text(title, 127.5, 35, { align: 'center', baseline: 'middle' });
 
-                // --- CONTENT ITERATION ---
                 sections.forEach(sec => {
-                    if (!sec.content.trim()) return; // Skip empty sections
+                    if (!sec.content.trim()) return;
 
                     if (sec.type === 'OUTPUT') {
-                        // Force OUTPUT to start on a new page immediately
                         doc.addPage();
-                        drawPageTemplate();
+                        drawTemplate();
                         currentY = 30;
                     } else if (sec.title === 'RESULT :') {
-                        // Force the result heading to be exactly 6 lines above the bottom usable margin
-                        // 277 is the Y coordinate of the bottom border. 5mm padding = 272 max Y.
-                        const targetBottomY = 272 - (6 * lineSpacing);
-                        
-                        // If current content has already crossed the target Y, move to next page
-                        if (currentY > targetBottomY) {
-                            doc.addPage();
-                            drawPageTemplate();
-                        }
-                        // Snap exactly 6 lines above the bottom
-                        currentY = targetBottomY;
+                        const targetY = 272 - (6 * lineSpacing);
+                        if (currentY > targetY) { doc.addPage(); drawTemplate(); currentY = 30; }
+                        currentY = targetY;
                     } else {
-                        checkPageBreak(2); // Require space for title and at least one line for normal sections
+                        checkBreak(2);
                     }
 
-                    // Section Title
                     doc.setFont("times", "bold");
                     doc.setFontSize(14);
-                    doc.setTextColor(0, 0, 0);
                     doc.text(sec.title, 20, currentY);
                     currentY += lineSpacing;
 
                     if (sec.type === 'OUTPUT') {
-                        // Turbo C++ Style Output Requirements
-                        const outLines = sec.content.split('\n');
-                        
-                        for (let line of outLines) {
-                            const wrappedOutputLines = doc.splitTextToSize(line, 165);
-                            
-                            for (let wLine of wrappedOutputLines) {
-                                checkPageBreak(1);
-                                
-                                const textWithCursor = wLine + "_";
-                                if (hasDosFont) {
-                                    doc.setFont("VT323", "normal");
-                                    // Bumping size to 14 because VT323 is natively narrower than Courier
-                                    doc.setFontSize(14); 
-                                } else {
-                                    doc.setFont("courier", "normal");
-                                    doc.setFontSize(11);
-                                }
-                                
-                                const textWidth = doc.getTextWidth(textWithCursor);
-                                
-                                // Black Rectangle Background
-                                doc.setFillColor(0, 0, 0);
-                                doc.rect(20, currentY - 5, textWidth + 4, 7, 'F');
-                                
-                                // White Text
-                                doc.setTextColor(255, 255, 255);
-                                doc.text(textWithCursor, 22, currentY);
-                                
-                                currentY += lineSpacing;
-                            }
-                        }
-                        // Reset formatting after output
-                        doc.setTextColor(0, 0, 0);
-                        currentY += lineSpacing / 2; // Extra padding after section
+                        const lines = sec.content.split('\n');
+                        if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
+                        else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
 
+                        let maxWidth = 0;
+                        let wrapped = [];
+                        lines.forEach(l => {
+                            const wr = doc.splitTextToSize(l, 165);
+                            wr.forEach(wl => {
+                                wrapped.push(wl);
+                                maxWidth = Math.max(maxWidth, doc.getTextWidth(wl));
+                            });
+                        });
+
+                        wrapped.forEach(l => {
+                            checkBreak(1);
+                            doc.setFillColor(0, 0, 0);
+                            doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
+                            doc.setTextColor(255, 255, 255);
+                            doc.text(l, 22, currentY);
+                            currentY += lineSpacing;
+                        });
+                        doc.setTextColor(0,0,0);
+                        currentY += lineSpacing/2;
                     } else {
-                        // Normal and Algorithm sections
                         doc.setFont("times", "normal");
                         doc.setFontSize(12);
-                        
-                        const paragraphs = sec.content.split('\n');
-
-                        for (let para of paragraphs) {
-                            // Word wrap based on safe area (170mm total)
-                            const wrappedLines = doc.splitTextToSize(para, 170);
-                            
-                            for (let line of wrappedLines) {
-                                checkPageBreak(1);
-                                doc.text(line, 20, currentY);
+                        const paras = sec.content.split('\n');
+                        paras.forEach(p => {
+                            const wrapped = doc.splitTextToSize(p, 170);
+                            wrapped.forEach(l => {
+                                checkBreak(1);
+                                doc.text(l, 20, currentY);
                                 currentY += lineSpacing;
-                            }
-                        }
-                        currentY += lineSpacing / 2; // Extra padding after section
+                            });
+                        });
+                        currentY += lineSpacing/2;
                     }
                 });
 
-                // Trigger Save Download
-                doc.save(`${regNo}_Exp_${expNo}_Record.pdf`);
-            
-            } catch (error) {
-                console.error("PDF Generation Error: ", error);
-                alert("An error occurred while generating the PDF. Check console for details.");
+                doc.save(`${regNo}_Record.pdf`);
+            } catch(err) {
+                console.error(err);
+                alert("Compilation failed.");
             } finally {
-                btn.innerText = "Initialize Compilation >_";
+                btn.innerText = "GENERATE RECORD PDF // EXECUTE";
                 btn.disabled = false;
             }
         }
