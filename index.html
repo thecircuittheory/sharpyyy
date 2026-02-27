@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHARPNESS</title>
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f0f1a;
+            --cyan: #00f3ff;
+            --magenta: #ff00ff;
+            --blue: #0033ff;
+            --glass-bg: rgba(15, 15, 26, 0.75);
+            --border-glow: 0 0 10px var(--cyan), inset 0 0 10px var(--cyan);
+            --focus-glow: 0 0 15px var(--magenta), inset 0 0 10px var(--magenta);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            position: relative;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            transform: perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(1000px) rotateX(60deg) translateY(40px) translateZ(-200px); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--blue);
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: pulseText 2s infinite alternate;
+        }
+
+        @keyframes pulseText {
+            0% { text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--blue); }
+            100% { text-shadow: 0 0 15px var(--cyan), 0 0 30px var(--cyan), 0 0 60px var(--blue); }
+        }
+
+        .cyber-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--border-glow);
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); box-shadow: 0 0 20px var(--cyan), inset 0 0 15px var(--cyan); }
+            100% { transform: translateY(0px); }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: var(--magenta);
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+        }
+
+        input[type="text"], 
+        input[type="date"],
+        textarea,
+        input[type="file"] {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--blue);
+            color: var(--cyan);
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.5;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--magenta);
+            box-shadow: var(--focus-glow);
+            color: #fff;
+        }
+
+        input[type="file"] {
+            padding: 9px;
+            color: var(--magenta);
+            cursor: pointer;
+        }
+        
+        input[type="file"]::file-selector-button {
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: 0.3s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        .btn-generate {
+            width: 100%;
+            background: transparent;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-generate::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn-generate:hover {
+            background: var(--cyan);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+            text-shadow: none;
+        }
+
+        .btn-generate:hover::before {
+            left: 100%;
+        }
+
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 4px;
+            box-shadow: 0 0 5px var(--cyan);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="header-title">SHARPNESS</h1>
+        
+        <div class="cyber-card">
+            <form id="recordForm" onsubmit="generatePDF(event)">
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Student Name</label>
+                        <input type="text" id="studentName" required placeholder="JOHN DOE">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Register Number</label>
+                        <input type="text" id="regNo" required placeholder="123456789">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Experiment Number</label>
+                        <input type="text" id="expNo" required placeholder="01">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="expDate" required>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Experiment Title</label>
+                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Course Code</label>
+                        <input type="text" id="courseCode" required placeholder="CS101">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Course Name</label>
+                        <input type="text" id="courseName" required placeholder="DATA STRUCTURES LAB">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Aim</label>
+                        <textarea id="aim" required placeholder="To write a program to..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Algorithm</label>
+                        <textarea id="algorithm" required placeholder="Step 1: Start..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Program / Source Code</label>
+                        <textarea id="program" required placeholder="#include <stdio.h>..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Output (Turbo C++ Rendered)</label>
+                        <textarea id="output" required placeholder="Enter value: 5&#10;Result: 25"></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Result</label>
+                        <textarea id="result" required placeholder="Thus the program was executed successfully..."></textarea>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Watermark Image (Optional)</label>
+                        <input type="file" id="watermark" accept="image/*">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-generate">Initialize Compilation >_</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let watermarkDataUrl = null;
+
+        // Handle Image Upload and convert to Base64
+        document.getElementById('watermark').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    watermarkDataUrl = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Main PDF Generation Logic
+        async function generatePDF(event) {
+            event.preventDefault();
+
+            const btn = document.querySelector('.btn-generate');
+            btn.innerText = "FETCHING DOS FONT & COMPILING... >_";
+            btn.disabled = true;
+
+            try {
+                // Extract window.jspdf class
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4
+
+                // Fetch and inject a retro terminal font dynamically
+                // jsPDF requires fonts with a very standard Unicode cmap. We're using VT323 from Google Fonts 
+                // which is heavily normalized and guaranteed to parse correctly in jsPDF, providing that DOS/Terminal vibe.
+                let hasDosFont = false;
+                try {
+                    const fontUrl = 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/vt323/VT323-Regular.ttf';
+                    const fontResponse = await fetch(fontUrl);
+                    const fontBuffer = await fontResponse.arrayBuffer();
+                    
+                    let binary = '';
+                    const bytes = new Uint8Array(fontBuffer);
+                    const len = bytes.byteLength;
+                    for (let i = 0; i < len; i++) {
+                        binary += String.fromCharCode(bytes[i]);
+                    }
+                    const base64Font = window.btoa(binary);
+                    
+                    doc.addFileToVFS('VT323.ttf', base64Font);
+                    doc.addFont('VT323.ttf', 'VT323', 'normal');
+                    
+                    // Safety check: Test if font loaded with proper widths. 
+                    doc.setFont('VT323', 'normal');
+                    doc.getTextWidth('test'); 
+                    
+                    hasDosFont = true;
+                    doc.setFont('times', 'normal'); // Reset for normal text
+                } catch(e) {
+                    console.warn("Could not load retro font smoothly, using fallback Courier.", e);
+                    hasDosFont = false;
+                    doc.setFont('times', 'normal'); // Ensure we are reset
+                }
+
+                // Fetch Form Data
+                const name = document.getElementById('studentName').value;
+                const regNo = document.getElementById('regNo').value;
+                const expNo = document.getElementById('expNo').value;
+                const date = document.getElementById('expDate').value.split('-').reverse().join('-');
+                const title = document.getElementById('expTitle').value;
+                const courseCode = document.getElementById('courseCode').value;
+                const courseName = document.getElementById('courseName').value;
+
+                const sections = [
+                    { title: 'AIM :', content: document.getElementById('aim').value, type: 'NORMAL' },
+                    { title: 'ALGORITHM :', content: document.getElementById('algorithm').value, type: 'ALGO' },
+                    { title: 'PROGRAM :', content: document.getElementById('program').value, type: 'NORMAL' },
+                    { title: 'OUTPUT :', content: document.getElementById('output').value, type: 'OUTPUT' },
+                    { title: 'RESULT :', content: document.getElementById('result').value, type: 'NORMAL' }
+                ];
+
+                // Setup Page Metrics
+                const lineSpacing = 7;
+                const maxPageY = 270; // Bottom boundary trigger for page break
+                let currentY = 55; // Start printing content below header boxes
+
+                // Function to draw static page template elements
+                function drawPageTemplate() {
+                    // 1. Draw outer border rectangle (Smaller Margins: X=15, Y=20, W=180, H=257)
+                    doc.setLineWidth(0.5);
+                    doc.setDrawColor(0, 0, 0);
+                    doc.rect(15, 20, 180, 257);
+
+                    // 2. Header (Name & RegNo above the border)
+                    doc.setFont("times", "bold");
+                    doc.setFontSize(14);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(name, 15, 15); // Left aligned above border
+                    doc.text(regNo, 195, 15, { align: 'right' }); // Right aligned above border
+
+                    // 3. Draw Course Footer (Right aligned below the border)
+                    doc.setFont("times", "bold");
+                    doc.setFontSize(14);
+                    const footerText = `${courseCode} – ${courseName}`;
+                    doc.text(footerText, 195, 283, { align: 'right' }); // Right aligned footer
+
+                    // 4. Draw Watermark if present
+                    if (watermarkDataUrl) {
+                        doc.saveGraphicsState();
+                        doc.setGState(new doc.GState({opacity: 0.06})); 
+                        // Centered: X = 15 + (180-130)/2 = 40. Y = 20 + (257-130)/2 = 83.5
+                        doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
+                        doc.restoreGraphicsState();
+                    }
+                }
+
+                // Function to handle page breaks dynamically
+                function checkPageBreak(linesNeeded = 1) {
+                    if (currentY + (linesNeeded * lineSpacing) > maxPageY) {
+                        doc.addPage();
+                        drawPageTemplate();
+                        currentY = 30; // Reset Y below top border for subsequent pages
+                    }
+                }
+
+                // --- FIRST PAGE INITIALIZATION ---
+                drawPageTemplate();
+
+                // First Page Header Elements (Structured Experiment Boxes)
+                doc.setLineWidth(0.5);
+                doc.setDrawColor(0, 0, 0);
+                
+                // Boxes start at X=20, end at X=190 (leaving 5mm padding from 15 and 195 border)
+                doc.rect(20, 25, 45, 10); // Exp No box
+                doc.rect(20, 35, 45, 10); // Date box
+                doc.rect(65, 25, 125, 20); // Title box (Width = 125. Ends at 65+125 = 190)
+
+                // Fill Box Content
+                doc.setFont("times", "bold");
+                doc.setFontSize(14);
+                doc.text(`Exp.no: ${expNo}`, 22, 31.5);
+                doc.text(`Date: ${date}`, 22, 41.5);
+
+                // Center Title Vertically in the large box
+                doc.setFont("times", "bold");
+                doc.setFontSize(14);
+                const splitTitle = doc.splitTextToSize(title, 115);
+                // Center in title box: 65 + (125/2) = 127.5. Y center of 25 to 45 is 35.
+                doc.text(splitTitle, 127.5, 35, { align: 'center', baseline: 'middle' });
+
+                // --- CONTENT ITERATION ---
+                sections.forEach(sec => {
+                    if (!sec.content.trim()) return; // Skip empty sections
+
+                    if (sec.type === 'OUTPUT') {
+                        // Force OUTPUT to start on a new page immediately
+                        doc.addPage();
+                        drawPageTemplate();
+                        currentY = 30;
+                    } else if (sec.title === 'RESULT :') {
+                        // Force the result heading to be exactly 6 lines above the bottom usable margin
+                        // 277 is the Y coordinate of the bottom border. 5mm padding = 272 max Y.
+                        const targetBottomY = 272 - (6 * lineSpacing);
+                        
+                        // If current content has already crossed the target Y, move to next page
+                        if (currentY > targetBottomY) {
+                            doc.addPage();
+                            drawPageTemplate();
+                        }
+                        // Snap exactly 6 lines above the bottom
+                        currentY = targetBottomY;
+                    } else {
+                        checkPageBreak(2); // Require space for title and at least one line for normal sections
+                    }
+
+                    // Section Title
+                    doc.setFont("times", "bold");
+                    doc.setFontSize(14);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(sec.title, 20, currentY);
+                    currentY += lineSpacing;
+
+                    if (sec.type === 'OUTPUT') {
+                        // Turbo C++ Style Output Requirements
+                        const outLines = sec.content.split('\n');
+                        
+                        for (let line of outLines) {
+                            const wrappedOutputLines = doc.splitTextToSize(line, 165);
+                            
+                            for (let wLine of wrappedOutputLines) {
+                                checkPageBreak(1);
+                                
+                                const textWithCursor = wLine + "_";
+                                if (hasDosFont) {
+                                    doc.setFont("VT323", "normal");
+                                    // Bumping size to 14 because VT323 is natively narrower than Courier
+                                    doc.setFontSize(14); 
+                                } else {
+                                    doc.setFont("courier", "normal");
+                                    doc.setFontSize(11);
+                                }
+                                
+                                const textWidth = doc.getTextWidth(textWithCursor);
+                                
+                                // Black Rectangle Background
+                                doc.setFillColor(0, 0, 0);
+                                doc.rect(20, currentY - 5, textWidth + 4, 7, 'F');
+                                
+                                // White Text
+                                doc.setTextColor(255, 255, 255);
+                                doc.text(textWithCursor, 22, currentY);
+                                
+                                currentY += lineSpacing;
+                            }
+                        }
+                        // Reset formatting after output
+                        doc.setTextColor(0, 0, 0);
+                        currentY += lineSpacing / 2; // Extra padding after section
+
+                    } else {
+                        // Normal and Algorithm sections
+                        doc.setFont("times", "normal");
+                        doc.setFontSize(12);
+                        
+                        const paragraphs = sec.content.split('\n');
+
+                        for (let para of paragraphs) {
+                            // Word wrap based on safe area (170mm total)
+                            const wrappedLines = doc.splitTextToSize(para, 170);
+                            
+                            for (let line of wrappedLines) {
+                                checkPageBreak(1);
+                                doc.text(line, 20, currentY);
+                                currentY += lineSpacing;
+                            }
+                        }
+                        currentY += lineSpacing / 2; // Extra padding after section
+                    }
+                });
+
+                // Trigger Save Download
+                doc.save(`${regNo}_Exp_${expNo}_Record.pdf`);
+            
+            } catch (error) {
+                console.error("PDF Generation Error: ", error);
+                alert("An error occurred while generating the PDF. Check console for details.");
+            } finally {
+                btn.innerText = "Initialize Compilation >_";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
