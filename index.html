@@ -379,8 +379,8 @@
                     </div>
 
                     <div class="input-group">
-                        <label>Date</label>
-                        <input type="date" id="expDate" required autocomplete="off">
+                        <label>Date (Optional)</label>
+                        <input type="date" id="expDate" autocomplete="off">
                     </div>
 
                     <div class="input-group full-width">
@@ -502,8 +502,9 @@
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
             // Show/Hide Specific Tool Buttons
-            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm' || id === 'output') ? 'block' : 'none';
-            document.getElementById('capBtn').style.display = (id === 'program') ? 'none' : 'block';
+            // Output section is literal, so we hide Purify and Sentence Case for it
+            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
+            document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
 
             document.getElementById('editorModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -528,11 +529,7 @@
             const area = document.getElementById('modalTextArea');
             if (!area.value) return;
             
-            // Smarter Sentence case:
-            // 1. Convert to lower case first for consistency (optional, but requested for AI clean up)
-            // 2. Capitalize at start of text (^\s*)
-            // 3. Capitalize after [.!?] followed by space ([.!?]\s+)
-            // 4. Capitalize at start of any new line (\n\s*)
+            // Smarter Sentence case
             area.value = area.value.toLowerCase().replace(/(^\s*|[.!?]\s+|\n\s*)([a-z])/g, m => m.toUpperCase());
         }
 
@@ -611,7 +608,8 @@
                 const nameValue = document.getElementById('studentName').value;
                 const regNoValue = document.getElementById('regNo').value;
                 const expNo = document.getElementById('expNo').value;
-                const date = document.getElementById('expDate').value.split('-').reverse().join('-');
+                const dateRaw = document.getElementById('expDate').value;
+                const date = dateRaw ? dateRaw.split('-').reverse().join('-') : "";
                 const title = document.getElementById('expTitle').value;
 
                 const sections = [
