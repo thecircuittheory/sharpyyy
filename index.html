@@ -548,11 +548,13 @@
         // --- SMART PASTE LOGIC ---
         function extractFlexible(text, labelVariants) {
             for (let label of labelVariants) {
-                // Regex matches the Label, optional spaces, colon, and captures everything lazily
-                // until the start of a new line followed by an ALL CAPS label or end of string
-                const regex = new RegExp(label + "\\s*:\\s*(.*?)(?=\\n[A-Z _]+:|$)", "is");
+                const regex = new RegExp(
+                    "(?:" + label + ")\\s*:\\s*([\\s\\S]*?)(?=\\n(?:NAME|REGISTER_NO|REGISTER NO|REG NO|EXPERIMENT|EXP_NO|EXP NO|DATE|TITLE|AIM|ALGORITHM|PROGRAM|SOURCE CODE|CODE|OUTPUT|RESULT|CONCLUSION)\\s*:|$)",
+                    "i"
+                );
+
                 const match = text.match(regex);
-                if (match && match[1].trim() !== "") {
+                if (match && match[1].trim()) {
                     return match[1].trim();
                 }
             }
