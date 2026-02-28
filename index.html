@@ -12,9 +12,11 @@
             --cyan: #00f3ff;
             --magenta: #ff00ff;
             --blue: #0033ff;
+            --green: #00ffaa;
             --glass-bg: rgba(10, 10, 20, 0.85);
             --border-glow: 0 0 10px var(--cyan), inset 0 0 10px var(--cyan);
             --focus-glow: 0 0 15px var(--magenta), inset 0 0 10px var(--magenta);
+            --smart-glow: 0 0 15px var(--green), inset 0 0 10px rgba(0, 255, 170, 0.2);
         }
 
         * {
@@ -165,6 +167,40 @@
         input:focus, textarea:focus {
             border-color: var(--cyan);
             box-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* SMART PASTE STYLES */
+        .smart-paste-box {
+            border: 1px dashed var(--green) !important;
+            background: rgba(0, 255, 170, 0.05) !important;
+            color: var(--green) !important;
+            min-height: 80px;
+        }
+
+        .smart-paste-box:focus {
+            box-shadow: var(--smart-glow) !important;
+        }
+        
+        .smart-paste-label {
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-status {
+            color: #000;
+            background: var(--green);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ai-status.visible {
+            opacity: 1;
         }
 
         .btn-main {
@@ -361,6 +397,17 @@
                 <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="flex-shrink: 0;">CONFIG</button>
             </div>
 
+            <!-- SMART PASTE MODE -->
+            <div class="input-group full-width" style="margin-bottom: 30px;">
+                <div class="label-row">
+                    <label class="smart-paste-label">
+                        ⚡ SMART PASTE MODE 
+                        <span id="aiStatus" class="ai-status">✓ AI DATA LOADED</span>
+                    </label>
+                </div>
+                <textarea id="autoFillBox" class="smart-paste-box" placeholder="[PASTE AI GENERATED RECORD HERE] // Fields will auto-populate instantly..."></textarea>
+            </div>
+
             <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
                 <div class="form-grid">
                     <div class="input-group">
@@ -431,7 +478,10 @@
 
                     <!-- WATERMARK SECTION -->
                     <div class="input-group full-width">
-                        <label>Watermark Layer</label>
+                        <div class="label-row">
+                            <label>Watermark Layer</label>
+                            <button type="button" class="btn-mini-format" onclick="loadRecommendedWatermark(event)">LOAD RECOMMENDED</button>
+                        </div>
                         <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
                             <input type="file" id="watermark" accept="image/*" style="display: none;" autocomplete="off">
                             <div class="watermark-preview" id="wmPreviewBox">
@@ -495,14 +545,80 @@
             courseName: "C PROGRAMMING"
         };
 
+        // --- SMART PASTE LOGIC ---
+        function extractFlexible(text, labelVariants) {
+            for (let label of labelVariants) {
+                // Regex matches the Label, optional spaces, colon, and captures everything lazily
+                // until the start of a new line followed by an ALL CAPS label or end of string
+                const regex = new RegExp(label + "\\s*:\\s*(.*?)(?=\\n[A-Z _]+:|$)", "is");
+                const match = text.match(regex);
+                if (match && match[1].trim() !== "") {
+                    return match[1].trim();
+                }
+            }
+            return "";
+        }
+
+        function autoFillForm() {
+            const text = document.getElementById("autoFillBox").value;
+            if (!text.trim()) return;
+
+            // Extract using variants
+            const name = extractFlexible(text, ["STUDENT NAME", "NAME"]);
+            const reg = extractFlexible(text, ["REGISTER_NO", "REGISTER NO", "REG NO", "REGISTRATION NUMBER"]);
+            const expNo = extractFlexible(text, ["EXPERIMENT NUMBER", "EXPERIMENT NO", "EXP_NO", "EXP NO"]);
+            const date = extractFlexible(text, ["DATE", "EXP DATE"]); // Browsers might require YYYY-MM-DD
+            const title = extractFlexible(text, ["EXPERIMENT TITLE", "TITLE"]);
+            const aim = extractFlexible(text, ["AIM", "OBJECTIVE"]);
+            const algo = extractFlexible(text, ["ALGORITHM", "PROCEDURE"]);
+            const prog = extractFlexible(text, ["PROGRAM", "SOURCE CODE", "CODE"]);
+            const output = extractFlexible(text, ["OUTPUT", "EXPECTED OUTPUT", "RESULTS"]);
+            const result = extractFlexible(text, ["RESULT", "CONCLUSION"]);
+
+            let populated = false;
+
+            if (name) { document.getElementById("studentName").value = name; populated = true; }
+            if (reg) { document.getElementById("regNo").value = reg; populated = true; }
+            if (expNo) { document.getElementById("expNo").value = expNo; populated = true; }
+            
+            // Format check for Date input
+            if (date) {
+                // Tries to map common date strings to standard HTML input format
+                const parsedDate = new Date(date);
+                if(!isNaN(parsedDate)) {
+                   document.getElementById("expDate").value = parsedDate.toISOString().split('T')[0];
+                }
+                populated = true;
+            }
+            
+            if (title) { document.getElementById("expTitle").value = title; populated = true; }
+            if (aim) { document.getElementById("aim").value = aim; populated = true; }
+            if (algo) { document.getElementById("algorithm").value = algo; populated = true; }
+            if (prog) { document.getElementById("program").value = prog; populated = true; }
+            if (output) { document.getElementById("output").value = output; populated = true; }
+            if (result) { document.getElementById("result").value = result; populated = true; }
+
+            // Flash success state
+            if (populated) {
+                const status = document.getElementById("aiStatus");
+                status.classList.add("visible");
+                setTimeout(() => {
+                    status.classList.remove("visible");
+                }, 3000);
+            }
+        }
+
+        // Attach Instant Listener
+        document.getElementById("autoFillBox").addEventListener("input", autoFillForm);
+        // -------------------------
+
+
         // Modal Controls
         function openEditor(id) {
             currentEditingId = id;
             document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
-            // Show/Hide Specific Tool Buttons
-            // Output section is literal, so we hide Purify and Sentence Case for it
             document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
             document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
 
@@ -528,8 +644,6 @@
         function capitalizeText() {
             const area = document.getElementById('modalTextArea');
             if (!area.value) return;
-            
-            // Smarter Sentence case
             area.value = area.value.toLowerCase().replace(/(^\s*|[.!?]\s+|\n\s*)([a-z])/g, m => m.toUpperCase());
         }
 
@@ -576,6 +690,40 @@
             document.getElementById('wmRemoveBtn').style.display = 'none';
         }
 
+        async function loadRecommendedWatermark(event) {
+            if(event) event.stopPropagation();
+            const btn = event ? event.target : null;
+            if (btn) btn.innerText = "LOADING...";
+            
+            try {
+                // Safer relative path for GitHub pages
+                const response = await fetch("./watermark.png");
+                if (!response.ok) throw new Error("Image not found");
+                const blob = await response.blob();
+
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    watermarkDataUrl = reader.result;
+
+                    document.getElementById('wmImg').src = watermarkDataUrl;
+                    document.getElementById('wmImg').style.display = 'block';
+                    document.getElementById('wmIcon').style.display = 'none';
+                    document.getElementById('wmStatus').innerText = "RECOMMENDED LOADED";
+                    document.getElementById('wmFilename').innerText = "watermark.png";
+                    document.getElementById('wmRemoveBtn').style.display = 'inline-block';
+                    
+                    if (btn) btn.innerText = "LOAD RECOMMENDED";
+                };
+
+                reader.readAsDataURL(blob);
+
+            } catch (err) {
+                alert("Failed to load recommended watermark. Ensure 'watermark.png' is in the same folder.");
+                console.error(err);
+                if (btn) btn.innerText = "LOAD RECOMMENDED";
+            }
+        }
+
         function normalizeText(text) {
             if (!text) return "";
             return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1');
@@ -591,7 +739,6 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
 
-                // Load Retro Font
                 let hasDosFont = false;
                 try {
                     const fontUrl = 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/vt323/VT323-Regular.ttf';
@@ -636,7 +783,7 @@
 
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
-                        doc.setGState(new doc.GState({opacity: 0.15})); 
+                        doc.setGState(new doc.GState({opacity: 0.10})); // Adjusted opacity down to 0.10 for a cleaner look
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
