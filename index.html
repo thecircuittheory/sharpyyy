@@ -7,13 +7,6 @@
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        @font-face {
-            font-family: 'TurboDOS';
-            src: url('./Web437_IBM_VGA_9x16-2x.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         :root {
             --bg-color: #05050a;
             --cyan: #00f3ff;
@@ -30,7 +23,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         body {
@@ -41,8 +34,8 @@
             overflow-x: hidden;
             background: radial-gradient(circle at center, #101025 0%, #05050a 100%);
             position: relative;
-            scrollbar-width: thin;
-            scrollbar-color: var(--cyan) rgba(10, 10, 20, 0.9);
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--cyan) rgba(10, 10, 20, 0.9); /* Firefox */
         }
 
         /* CYBERPUNK SCROLLBARS */
@@ -60,7 +53,7 @@
         ::-webkit-scrollbar-thumb {
             background: var(--cyan);
             border-radius: 2px;
-            border: 2px solid var(--glass-bg);
+            border: 2px solid var(--glass-bg); /* Creates a neat inner-padding effect */
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -71,6 +64,7 @@
             background: var(--bg-color);
         }
 
+        /* Specific narrower scrollbars for text areas */
         textarea::-webkit-scrollbar {
             width: 8px;
         }
@@ -242,76 +236,6 @@
             opacity: 1;
         }
 
-        /* SETTINGS BOX */
-        .settings-box {
-            border: 1px dashed var(--blue);
-            padding: 15px;
-            border-radius: 4px;
-            background: rgba(0, 51, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .settings-box label {
-            color: #ccc;
-            font-size: 0.85rem;
-            text-transform: none;
-            cursor: pointer;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-        }
-
-        /* CYBER TOGGLE SWITCH */
-        .cyber-toggle {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 22px;
-            flex-shrink: 0;
-        }
-
-        .cyber-toggle input {
-            display: none;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--blue);
-            transition: .4s;
-            border-radius: 4px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: var(--blue);
-            transition: .4s;
-            border-radius: 2px;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: rgba(0, 243, 255, 0.1);
-            border-color: var(--cyan);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(22px);
-            background-color: var(--cyan);
-            box-shadow: 0 0 8px var(--cyan);
-        }
-
         .btn-main {
             width: 100%;
             background: transparent;
@@ -445,11 +369,12 @@
             height: 100%;
             background: transparent;
             color: #00ff41;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1rem;
             padding: 15px;
             border: none;
             outline: none;
             resize: none;
-            font-family: 'Courier New', Courier, monospace;
         }
 
         .modal-footer {
@@ -485,19 +410,6 @@
             .full-width { grid-column: span 1; }
             .course-details-display { flex-direction: column; text-align: center; }
         }
-
-        /* TURBO OUTPUT CLASS ONLY */
-        .turbo-output {
-            font-family: 'TurboDOS', monospace !important;
-            background: #000 !important;
-            color: #fff !important;
-            font-size: 16px;
-            line-height: 1.2;
-            letter-spacing: 0;
-            padding: 4px 6px !important;
-            white-space: pre;
-            border: 2px solid #aaa !important;
-        }
     </style>
 </head>
 <body autocomplete="off">
@@ -531,26 +443,14 @@
 
             <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
                 <div class="form-grid">
-                    
-                    <!-- DOCUMENT SETTINGS -->
-                    <div class="input-group full-width settings-box">
-                        <label>
-                            <div class="cyber-toggle">
-                                <input type="checkbox" id="firstPageHeadersOnly">
-                                <span class="toggle-slider"></span>
-                            </div>
-                            <span>Show Name & Reg No headers on FIRST PAGE ONLY (Do not repeat)</span>
-                        </label>
-                    </div>
-
                     <div class="input-group">
-                        <label>Student Name (Optional)</label>
-                        <input type="text" id="studentName" placeholder="JOHN DOE" autocomplete="off">
+                        <label>Student Name</label>
+                        <input type="text" id="studentName" required placeholder="JOHN DOE" autocomplete="off">
                     </div>
                     
                     <div class="input-group">
-                        <label>Register Number (Optional)</label>
-                        <input type="text" id="regNo" placeholder="123456789" autocomplete="off">
+                        <label>Register Number</label>
+                        <input type="text" id="regNo" required placeholder="123456789" autocomplete="off">
                     </div>
 
                     <div class="input-group">
@@ -598,7 +498,7 @@
                             <label>Output</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
                         </div>
-                        <textarea id="output" class="turbo-output" required autocomplete="off"></textarea>
+                        <textarea id="output" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -681,31 +581,15 @@
         // --- SMART PASTE LOGIC ---
         function extractFlexible(text, labelVariants) {
             for (let label of labelVariants) {
-                const regex = new RegExp("^" + label + "\\s*:\\s*(.*)$", "im");
-                const match = text.match(regex);
-
-                if (match) {
-                    const value = match[1].trim();
-
-                    if (!value || /^[A-Z_ ]+\s*:/.test(value)) {
-                        return "";
-                    }
-
-                    return value;
-                }
-            }
-            return "";
-        }
-
-        function extractBlock(text, labelVariants) {
-            for (let label of labelVariants) {
                 const regex = new RegExp(
-                    label + "\\s*:\\s*([\\s\\S]*?)(?=\\n(?:NAME|REGISTER_NO|EXP_NO|DATE|TITLE|AIM|ALGORITHM|PROGRAM|OUTPUT|RESULT)\\s*:|$)",
+                    "(?:" + label + ")\\s*:\\s*([\\s\\S]*?)(?=\\n(?:NAME|REGISTER_NO|REGISTER NO|REG NO|EXPERIMENT|EXP_NO|EXP NO|DATE|TITLE|AIM|ALGORITHM|PROGRAM|SOURCE CODE|CODE|OUTPUT|RESULT|CONCLUSION)\\s*:|$)",
                     "i"
                 );
 
                 const match = text.match(regex);
-                if (match) return match[1].trim();
+                if (match && match[1].trim()) {
+                    return match[1].trim();
+                }
             }
             return "";
         }
@@ -714,22 +598,17 @@
             const text = document.getElementById("autoFillBox").value;
             if (!text.trim()) return;
 
-            function cleanText(t) {
-                return t ? t.replace(/\r/g, '').trim() : "";
-            }
-
-            // Extract using targeted precise variants
+            // Extract using variants
             const name = extractFlexible(text, ["STUDENT NAME", "NAME"]);
             const reg = extractFlexible(text, ["REGISTER_NO", "REGISTER NO", "REG NO", "REGISTRATION NUMBER"]);
-            const expNo = extractFlexible(text, ["EXP_NO", "EXPERIMENT NUMBER", "EXPERIMENT NO", "EXP NO"]);
-            const date = extractFlexible(text, ["DATE", "EXP DATE"]); 
-            const title = extractFlexible(text, ["TITLE", "EXPERIMENT TITLE"]);
-            
-            const aim = extractBlock(text, ["AIM", "OBJECTIVE"]);
-            const algo = extractBlock(text, ["ALGORITHM", "PROCEDURE"]);
-            const prog = extractBlock(text, ["PROGRAM", "SOURCE CODE", "CODE"]);
-            const output = extractBlock(text, ["OUTPUT", "EXPECTED OUTPUT", "RESULTS"]);
-            const result = extractBlock(text, ["RESULT", "CONCLUSION"]);
+            const expNo = extractFlexible(text, ["EXPERIMENT NUMBER", "EXPERIMENT NO", "EXP_NO", "EXP NO"]);
+            const date = extractFlexible(text, ["DATE", "EXP DATE"]); // Browsers might require YYYY-MM-DD
+            const title = extractFlexible(text, ["EXPERIMENT TITLE", "TITLE"]);
+            const aim = extractFlexible(text, ["AIM", "OBJECTIVE"]);
+            const algo = extractFlexible(text, ["ALGORITHM", "PROCEDURE"]);
+            const prog = extractFlexible(text, ["PROGRAM", "SOURCE CODE", "CODE"]);
+            const output = extractFlexible(text, ["OUTPUT", "EXPECTED OUTPUT", "RESULTS"]);
+            const result = extractFlexible(text, ["RESULT", "CONCLUSION"]);
 
             let populated = false;
 
@@ -739,6 +618,7 @@
             
             // Format check for Date input
             if (date) {
+                // Tries to map common date strings to standard HTML input format
                 const parsedDate = new Date(date);
                 if(!isNaN(parsedDate)) {
                    document.getElementById("expDate").value = parsedDate.toISOString().split('T')[0];
@@ -747,11 +627,11 @@
             }
             
             if (title) { document.getElementById("expTitle").value = title; populated = true; }
-            if (aim) { document.getElementById("aim").value = cleanText(aim); populated = true; }
-            if (algo) { document.getElementById("algorithm").value = cleanText(algo); populated = true; }
-            if (prog) { document.getElementById("program").value = cleanText(prog); populated = true; }
-            if (output) { document.getElementById("output").value = cleanText(output); populated = true; }
-            if (result) { document.getElementById("result").value = cleanText(result); populated = true; }
+            if (aim) { document.getElementById("aim").value = aim; populated = true; }
+            if (algo) { document.getElementById("algorithm").value = algo; populated = true; }
+            if (prog) { document.getElementById("program").value = prog; populated = true; }
+            if (output) { document.getElementById("output").value = output; populated = true; }
+            if (result) { document.getElementById("result").value = result; populated = true; }
 
             // Flash success state
             if (populated) {
@@ -767,19 +647,12 @@
         document.getElementById("autoFillBox").addEventListener("input", autoFillForm);
         // -------------------------
 
+
         // Modal Controls
         function openEditor(id) {
             currentEditingId = id;
             document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
-            
-            const editor = document.getElementById('modalTextArea');
-            editor.value = document.getElementById(id).value;
-            
-            if (id === 'output') {
-                editor.classList.add('turbo-output');
-            } else {
-                editor.classList.remove('turbo-output');
-            }
+            document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
             document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
             document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
@@ -858,6 +731,7 @@
             if (btn) btn.innerText = "LOADING...";
             
             try {
+                // Safer relative path for GitHub pages
                 const response = await fetch("./watermark.png");
                 if (!response.ok) throw new Error("Image not found");
                 const blob = await response.blob();
@@ -913,20 +787,12 @@
                     hasDosFont = true;
                 } catch(e) { console.warn("Font load failed."); }
 
-                // Gather Values & Setup Defaults
-                const rawName = document.getElementById('studentName').value.trim();
-                const nameValue = rawName ? rawName : '                      '; // 22 Spaces Default
-                
-                const rawRegNo = document.getElementById('regNo').value.trim();
-                const regNoValue = rawRegNo ? rawRegNo : '                      '; // 22 Spaces Default
-                
+                const nameValue = document.getElementById('studentName').value;
+                const regNoValue = document.getElementById('regNo').value;
                 const expNo = document.getElementById('expNo').value;
                 const dateRaw = document.getElementById('expDate').value;
                 const date = dateRaw ? dateRaw.split('-').reverse().join('-') : "";
                 const title = document.getElementById('expTitle').value;
-
-                // Check Settings Mode
-                const firstPageHeadersOnly = document.getElementById('firstPageHeadersOnly').checked;
 
                 const sections = [
                     { title: 'AIM :', content: normalizeText(document.getElementById('aim').value), type: 'NORMAL' },
@@ -939,25 +805,20 @@
                 const lineSpacing = 7;
                 let currentY = 55;
 
-                function drawTemplate(isFirstPage = false) {
+                function drawTemplate() {
                     doc.setLineWidth(0.5);
                     doc.setDrawColor(0, 0, 0);
                     doc.rect(15, 20, 180, 257);
                     
                     doc.setFont("times", "bold");
                     doc.setFontSize(14);
-
-                    // Print Headers Conditionally based on Setting Mode
-                    if (!firstPageHeadersOnly || isFirstPage) {
-                        doc.text("Name : " + nameValue, 15, 15);
-                        doc.text("Reg no : " + regNoValue, 195, 15, { align: 'right' });
-                    }
-
+                    doc.text("Name : " + nameValue, 15, 15);
+                    doc.text("Reg no : " + regNoValue, 195, 15, { align: 'right' });
                     doc.text(`${config.courseCode} – ${config.courseName}`, 195, 283, { align: 'right' });
 
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
-                        doc.setGState(new doc.GState({opacity: 0.10})); // Clean 10% opacity
+                        doc.setGState(new doc.GState({opacity: 0.10})); // Adjusted opacity down to 0.10 for a cleaner look
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
@@ -968,14 +829,12 @@
                 function checkBreak(linesNeeded = 1) {
                     if (currentY + (linesNeeded * lineSpacing) > 270) {
                         doc.addPage();
-                        drawTemplate(false);
+                        drawTemplate();
                         currentY = 30;
                     }
                 }
 
-                // Initial page render
-                drawTemplate(true);
-                
+                drawTemplate();
                 doc.setFont("times", "bold");
                 doc.setFontSize(14);
                 doc.rect(20, 25, 45, 10);
@@ -997,15 +856,11 @@
 
                     if (sec.type === 'OUTPUT') {
                         doc.addPage();
-                        drawTemplate(false);
+                        drawTemplate();
                         currentY = 30;
                     } else if (sec.title === 'RESULT :') {
                         const targetY = 272 - (6 * lineSpacing);
-                        if (currentY > targetY) { 
-                            doc.addPage(); 
-                            drawTemplate(false); 
-                            currentY = 30; 
-                        }
+                        if (currentY > targetY) { doc.addPage(); drawTemplate(); currentY = 30; }
                         currentY = targetY;
                     } else {
                         checkBreak(2);
@@ -1017,48 +872,33 @@
                     currentY += lineSpacing;
 
                     if (sec.type === 'OUTPUT') {
-                        const lines = sec.content.replace(/\r/g, '').split('\n');
-                        let wrapped = [];
+                        const lines = sec.content.split('\n');
                         let maxWidth = 0;
+                        let wrapped = [];
+                        
+                        if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
+                        else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
 
-                        // 🔥 Turbo font ONCE
-                        if (hasDosFont) {
-                            doc.setFont("VT323", "normal");
-                            doc.setFontSize(14);
-                        } else {
-                            doc.setFont("courier", "normal");
-                            doc.setFontSize(11);
-                        }
-
-                        // 🔥 measure longest line (no wrapping)
                         lines.forEach(l => {
-                            wrapped.push(l);
-                            const w = doc.getTextWidth(l);
-                            if (w > maxWidth) maxWidth = w;
+                            const wr = doc.splitTextToSize(l, 165);
+                            wr.forEach(wl => {
+                                wrapped.push(wl);
+                                maxWidth = Math.max(maxWidth, doc.getTextWidth(wl));
+                            });
                         });
-
-                        // 🔥 PERFECT PADDING (THIS IS THE KEY)
-                        const paddingX = 6;   // left-right gap
-                        const paddingY = 3;   // top-bottom gap
-
-                        const boxWidth = maxWidth + (paddingX * 2);
-                        const boxHeight = wrapped.length * lineSpacing + (paddingY * 2);
-
-                        // 🔥 DRAW BOX
-                        doc.setFillColor(0, 0, 0);
-                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
-
-                        // 🔥 TEXT
-                        doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            doc.text(l, 20 + paddingX, currentY);
+                            if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
+                            else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
+                            doc.setFillColor(0, 0, 0);
+                            doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
+                            doc.setTextColor(255, 255, 255);
+                            doc.text(l, 22, currentY);
                             currentY += lineSpacing;
                         });
-
-                        doc.setTextColor(0, 0, 0);
-                        currentY += paddingY;
+                        doc.setTextColor(0,0,0);
+                        currentY += lineSpacing/2;
                     } else {
                         doc.setFont("times", "normal");
                         doc.setFontSize(12);
@@ -1077,10 +917,7 @@
                     }
                 });
 
-                // Generate valid filename fallback
-                const safeName = rawRegNo ? rawRegNo : 'Template';
-                doc.save(`${safeName}_Record.pdf`);
-                
+                doc.save(`${regNoValue}_Record.pdf`);
             } catch(err) {
                 console.error(err);
                 alert("Generation failed.");
