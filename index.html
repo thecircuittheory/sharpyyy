@@ -7,6 +7,13 @@
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        @font-face {
+            font-family: 'TurboDOS';
+            src: url('./Web437_IBM_VGA_9x16-2x.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
             --bg-color: #05050a;
             --cyan: #00f3ff;
@@ -478,6 +485,19 @@
             .full-width { grid-column: span 1; }
             .course-details-display { flex-direction: column; text-align: center; }
         }
+
+        /* TURBO OUTPUT CLASS ONLY */
+        .turbo-output {
+            font-family: 'TurboDOS', monospace !important;
+            background: #000 !important;
+            color: #fff !important;
+            font-size: 16px;
+            line-height: 1.2;
+            letter-spacing: 0;
+            padding: 4px 6px !important;
+            white-space: pre;
+            border: 2px solid #aaa !important;
+        }
     </style>
 </head>
 <body autocomplete="off">
@@ -578,7 +598,7 @@
                             <label>Output</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
                         </div>
-                        <textarea id="output" required autocomplete="off"></textarea>
+                        <textarea id="output" class="turbo-output" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -754,6 +774,12 @@
             
             const editor = document.getElementById('modalTextArea');
             editor.value = document.getElementById(id).value;
+            
+            if (id === 'output') {
+                editor.classList.add('turbo-output');
+            } else {
+                editor.classList.remove('turbo-output');
+            }
             
             document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
             document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
