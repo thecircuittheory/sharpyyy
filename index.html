@@ -933,8 +933,8 @@
                         // 🔥 ONLY HERE → VGA FONT
                         if (hasVGAFont) {
                             doc.setFont("VGA", "normal");
-                            doc.setFontSize(8.5); // 🔥 sweet spot for VGA
-                            doc.setCharSpace(-0.2); // 🔥 improves VGA readability
+                            doc.setFontSize(9); // 🔥 sweet spot for VGA
+                            doc.setCharSpace(0.2); // 🔥 improves VGA readability
                         } else {
                             doc.setFont("courier", "normal");
                             doc.setFontSize(10);
@@ -946,8 +946,7 @@
                         // 🔥 WIDTH CALC
                         let maxWidth = 0;
                         wrapped.forEach(l => {
-                            let w = doc.getTextWidth(l + "  ") + 0.5;
-                            if (hasVGAFont) w = w * 0.8; // ✅ scale box width down to match squished text
+                            const w = doc.getTextWidth(l + "  ") + 0.5;
                             if (w > maxWidth) maxWidth = w;
                         });
 
@@ -958,8 +957,8 @@
                         const boxWidth = maxWidth + (paddingX * 2);
                         const boxHeight = wrapped.length * outLineSpacing + (paddingY * 2);
 
-                        // ✅ SAME SPACE AS BOTTOM (TOP GAP)
-                        currentY += paddingY + (outLineSpacing * 0.8);
+                        // 🔥 GAP FIX
+                        currentY += paddingY;
 
                         // BOX
                         doc.setFillColor(0, 0, 0);
@@ -974,20 +973,7 @@
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            
-                            if (hasVGAFont) {
-                                doc.saveGraphicsState();
-                                // move origin to text start
-                                doc.setCurrentTransformationMatrix(1, 0, 0, 1, 20 + paddingX, currentY + 1.2);
-                                // compress only X
-                                doc.setCurrentTransformationMatrix(0.8, 0, 0, 1, 0, 0);
-                                // draw at (0,0) in transformed space
-                                doc.text(l, 0, 0);
-                                doc.restoreGraphicsState();
-                            } else {
-                                doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
-                            }
-                            
+                            doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
                             currentY += outLineSpacing;
                         });
 
