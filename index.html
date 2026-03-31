@@ -7,13 +7,6 @@
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        @font-face {
-            font-family: 'TurboDOS';
-            src: url('./Web437_IBM_VGA_9x16-2x.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         :root {
             --bg-color: #05050a;
             --cyan: #00f3ff;
@@ -201,7 +194,6 @@
         textarea {
             min-height: 100px;
             line-height: 1.6;
-            font-family: 'Courier New', Courier, monospace;
         }
 
         input:focus, textarea:focus {
@@ -486,16 +478,6 @@
             .full-width { grid-column: span 1; }
             .course-details-display { flex-direction: column; text-align: center; }
         }
-
-        /* TURBO OUTPUT CLASS ONLY */
-        .turbo-output {
-            font-family: 'TurboDOS', monospace !important;
-            background: #000;
-            color: #fff;
-            font-size: 16px;
-            line-height: 1.35;
-            letter-spacing: 0.5px;
-        }
     </style>
 </head>
 <body autocomplete="off">
@@ -596,7 +578,7 @@
                             <label>Output</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
                         </div>
-                        <textarea id="output" class="turbo-output" required autocomplete="off"></textarea>
+                        <textarea id="output" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -772,12 +754,6 @@
             
             const editor = document.getElementById('modalTextArea');
             editor.value = document.getElementById(id).value;
-            
-            if (id === 'output') {
-                editor.classList.add('turbo-output');
-            } else {
-                editor.classList.remove('turbo-output');
-            }
             
             document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
             document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
@@ -1030,18 +1006,33 @@
                             });
                         });
 
+                        // Calculate full block height
+                        const boxHeight = wrapped.length * lineSpacing;
+
+                        // Draw ONE continuous black box
+                        doc.setFillColor(0, 0, 0);
+                        doc.rect(20, currentY - 5, 170, boxHeight + 2, 'F');
+
+                        // Print text
+                        doc.setTextColor(255, 255, 255);
+
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
-                            else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
-                            doc.setFillColor(0, 0, 0);
-                            doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
-                            doc.setTextColor(255, 255, 255);
+
+                            if (hasDosFont) {
+                                doc.setFont("VT323", "normal");
+                                doc.setFontSize(14);
+                            } else {
+                                doc.setFont("courier", "normal");
+                                doc.setFontSize(11);
+                            }
+
                             doc.text(l, 22, currentY);
                             currentY += lineSpacing;
                         });
-                        doc.setTextColor(0,0,0);
-                        currentY += lineSpacing/2;
+
+                        doc.setTextColor(0, 0, 0);
+                        currentY += lineSpacing / 2;
                     } else {
                         doc.setFont("times", "normal");
                         doc.setFontSize(12);
