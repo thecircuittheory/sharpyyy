@@ -977,9 +977,12 @@
                             
                             if (hasVGAFont) {
                                 doc.saveGraphicsState();
-                                // compress width (0.8 = 80% width)
+                                // move origin to text start
+                                doc.setCurrentTransformationMatrix(1, 0, 0, 1, 20 + paddingX, currentY + 1.2);
+                                // compress only X
                                 doc.setCurrentTransformationMatrix(0.8, 0, 0, 1, 0, 0);
-                                doc.text(l, (20 + paddingX) / 0.8, currentY + 1.2);
+                                // draw at (0,0) in transformed space
+                                doc.text(l, 0, 0);
                                 doc.restoreGraphicsState();
                             } else {
                                 doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
