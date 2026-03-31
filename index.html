@@ -160,6 +160,21 @@
             letter-spacing: 1.2px;
         }
 
+        .checkbox-label {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: var(--cyan);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+            accent-color: var(--cyan);
+        }
+
         .btn-mini-format {
             background: rgba(255, 0, 255, 0.1);
             border: 1px solid var(--magenta);
@@ -443,14 +458,22 @@
 
             <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
                 <div class="form-grid">
+                    
+                    <div class="input-group full-width">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="firstPageOnly" checked>
+                            Show Name & Reg No on FIRST PAGE ONLY
+                        </label>
+                    </div>
+
                     <div class="input-group">
                         <label>Student Name</label>
-                        <input type="text" id="studentName" required placeholder="JOHN DOE" autocomplete="off">
+                        <input type="text" id="studentName" placeholder="JOHN DOE" autocomplete="off">
                     </div>
                     
                     <div class="input-group">
                         <label>Register Number</label>
-                        <input type="text" id="regNo" required placeholder="123456789" autocomplete="off">
+                        <input type="text" id="regNo" placeholder="123456789" autocomplete="off">
                     </div>
 
                     <div class="input-group">
@@ -774,21 +797,32 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
 
-                let hasDosFont = false;
-                try {
-                    const fontUrl = 'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/vt323/VT323-Regular.ttf';
-                    const fontResponse = await fetch(fontUrl);
-                    const fontBuffer = await fontResponse.arrayBuffer();
-                    let binary = '';
-                    const bytes = new Uint8Array(fontBuffer);
-                    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-                    doc.addFileToVFS('VT323.ttf', window.btoa(binary));
-                    doc.addFont('VT323.ttf', 'VT323', 'normal');
-                    hasDosFont = true;
-                } catch(e) { console.warn("Font load failed."); }
+                let hasVGAFont = false;
 
-                const nameValue = document.getElementById('studentName').value;
-                const regNoValue = document.getElementById('regNo').value;
+                try {
+                    const fontUrl = './Web437_IBM_VGA_9x16-2x.ttf';
+                    const res = await fetch(fontUrl);
+                    const buffer = await res.arrayBuffer();
+
+                    let binary = '';
+                    const bytes = new Uint8Array(buffer);
+                    for (let i = 0; i < bytes.length; i++) {
+                        binary += String.fromCharCode(bytes[i]);
+                    }
+
+                    doc.addFileToVFS('VGA.ttf', btoa(binary));
+                    doc.addFont('VGA.ttf', 'VGA', 'normal');
+                    hasVGAFont = true;
+
+                } catch (e) {
+                    console.warn("VGA font failed");
+                }
+
+                const rawName = document.getElementById('studentName').value.trim();
+                const rawReg = document.getElementById('regNo').value.trim();
+
+                const nameValue = rawName ? rawName : '                      ';
+                const regNoValue = rawReg ? rawReg : '                      ';
                 const expNo = document.getElementById('expNo').value;
                 const dateRaw = document.getElementById('expDate').value;
                 const date = dateRaw ? dateRaw.split('-').reverse().join('-') : "";
@@ -812,13 +846,21 @@
                     
                     doc.setFont("times", "bold");
                     doc.setFontSize(14);
-                    doc.text("Name : " + nameValue, 15, 15);
-                    doc.text("Reg no : " + regNoValue, 195, 15, { align: 'right' });
+                    
+                    const firstPageOnly = document.getElementById("firstPageOnly").checked;
+                    // Provide fallback mapping for getting page number depending on jsPDF version format
+                    const pageCount = (typeof doc.getNumberOfPages === 'function') ? doc.getNumberOfPages() : doc.internal.getNumberOfPages();
+
+                    if (!firstPageOnly || pageCount === 1) {
+                        doc.text("Name : " + nameValue, 15, 15);
+                        doc.text("Reg no : " + regNoValue, 195, 15, { align: 'right' });
+                    }
+
                     doc.text(`${config.courseCode} – ${config.courseName}`, 195, 283, { align: 'right' });
 
                     if (watermarkDataUrl) {
                         doc.saveGraphicsState();
-                        doc.setGState(new doc.GState({opacity: 0.10})); // Adjusted opacity down to 0.10 for a cleaner look
+                        doc.setGState(new doc.GState({opacity: 0.10})); 
                         doc.addImage(watermarkDataUrl, 'JPEG', 40, 83.5, 130, 130);
                         doc.restoreGraphicsState();
                     }
@@ -872,33 +914,50 @@
                     currentY += lineSpacing;
 
                     if (sec.type === 'OUTPUT') {
-                        const lines = sec.content.split('\n');
+                        const lines = sec.content.replace(/\r/g, '').split('\n');
+
                         let maxWidth = 0;
                         let wrapped = [];
-                        
-                        if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
-                        else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
 
+                        // 🔥 ONLY HERE → VGA FONT
+                        if (hasVGAFont) {
+                            doc.setFont("VGA", "normal");
+                            doc.setFontSize(14);
+                        } else {
+                            doc.setFont("courier", "normal");
+                            doc.setFontSize(11);
+                        }
+
+                        // measure longest line
                         lines.forEach(l => {
-                            const wr = doc.splitTextToSize(l, 165);
-                            wr.forEach(wl => {
-                                wrapped.push(wl);
-                                maxWidth = Math.max(maxWidth, doc.getTextWidth(wl));
-                            });
+                            wrapped.push(l);
+                            const w = doc.getTextWidth(l);
+                            if (w > maxWidth) maxWidth = w;
                         });
+
+                        // padding
+                        const paddingX = 6;
+                        const paddingY = 3;
+
+                        const boxWidth = maxWidth + (paddingX * 2);
+                        const boxHeight = wrapped.length * lineSpacing + (paddingY * 2);
+
+                        // draw ONE box
+                        doc.setFillColor(0, 0, 0);
+                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
+
+                        // text
+                        doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
-                            else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
-                            doc.setFillColor(0, 0, 0);
-                            doc.rect(20, currentY - 5, maxWidth + 4, 7, 'F');
-                            doc.setTextColor(255, 255, 255);
-                            doc.text(l, 22, currentY);
+                            doc.text(l, 20 + paddingX, currentY);
                             currentY += lineSpacing;
                         });
-                        doc.setTextColor(0,0,0);
-                        currentY += lineSpacing/2;
+
+                        doc.setTextColor(0, 0, 0);
+                        currentY += paddingY;
+
                     } else {
                         doc.setFont("times", "normal");
                         doc.setFontSize(12);
@@ -917,7 +976,7 @@
                     }
                 });
 
-                doc.save(`${regNoValue}_Record.pdf`);
+                doc.save(`${regNoValue.trim() || 'NoName'}_Record.pdf`);
             } catch(err) {
                 console.error(err);
                 alert("Generation failed.");
