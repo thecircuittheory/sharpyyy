@@ -603,18 +603,30 @@
 
         // --- SMART PASTE LOGIC ---
         function extractFlexible(text, labelVariants) {
+            const HEADINGS = [
+                "NAME","REGISTER_NO","REGISTER NO","REG NO",
+                "EXPERIMENT","EXP_NO","EXP NO",
+                "DATE","TITLE","AIM","ALGORITHM",
+                "PROGRAM","SOURCE CODE","CODE",
+                "OUTPUT","RESULT","CONCLUSION"
+            ].join("|");
+
             for (let label of labelVariants) {
                 const regex = new RegExp(
-                    "(?:" + label + ")\\s*:\\s*([\\s\\S]*?)(?=\\n(?:NAME|REGISTER_NO|REGISTER NO|REG NO|EXPERIMENT|EXP_NO|EXP NO|DATE|TITLE|AIM|ALGORITHM|PROGRAM|SOURCE CODE|CODE|OUTPUT|RESULT|CONCLUSION)\\s*:|$)",
+                    label + "\\s*:\\s*([\\s\\S]*?)(?=\\n(?:" + HEADINGS + ")\\s*:|$)",
                     "i"
                 );
 
                 const match = text.match(regex);
-                if (match && match[1].trim()) {
+                if (match && match[1]) {
                     return match[1].trim();
                 }
             }
             return "";
+        }
+
+        function isValidValue(val) {
+            return val && !val.includes(":");
         }
 
         function autoFillForm() {
@@ -635,9 +647,9 @@
 
             let populated = false;
 
-            if (name) { document.getElementById("studentName").value = name; populated = true; }
-            if (reg) { document.getElementById("regNo").value = reg; populated = true; }
-            if (expNo) { document.getElementById("expNo").value = expNo; populated = true; }
+            if (isValidValue(name)) { document.getElementById("studentName").value = name; populated = true; }
+            if (isValidValue(reg)) { document.getElementById("regNo").value = reg; populated = true; }
+            if (isValidValue(expNo)) { document.getElementById("expNo").value = expNo; populated = true; }
             
             // Format check for Date input
             if (date) {
@@ -836,7 +848,7 @@
                     { title: 'RESULT :', content: normalizeText(document.getElementById('result').value), type: 'NORMAL' }
                 ];
 
-                const lineSpacing = 7;
+                const lineSpacing = 6;
                 let currentY = 55;
 
                 function drawTemplate() {
@@ -916,46 +928,57 @@
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.replace(/\r/g, '').split('\n');
 
-                        let maxWidth = 0;
-                        let wrapped = [];
+                        const outLineSpacing = 5.2; // 🔥 tighter + natural
 
                         // 🔥 ONLY HERE → VGA FONT
                         if (hasVGAFont) {
                             doc.setFont("VGA", "normal");
-                            doc.setFontSize(14);
+                            doc.setFontSize(9); // 🔥 sweet spot for VGA
+                            doc.setCharSpace(0.2); // 🔥 improves VGA readability
                         } else {
                             doc.setFont("courier", "normal");
-                            doc.setFontSize(11);
+                            doc.setFontSize(10);
+                            doc.setCharSpace(0);
                         }
 
-                        // measure longest line
-                        lines.forEach(l => {
-                            wrapped.push(l);
-                            const w = doc.getTextWidth(l);
+                        let wrapped = lines; // 🔥 NO WRAP
+
+                        // 🔥 WIDTH CALC
+                        let maxWidth = 0;
+                        wrapped.forEach(l => {
+                            const w = doc.getTextWidth(l + "  ") + 0.5;
                             if (w > maxWidth) maxWidth = w;
                         });
 
-                        // padding
-                        const paddingX = 6;
-                        const paddingY = 3;
+                        // 🔥 PERFECT PADDING
+                        const paddingX = doc.getTextWidth("  ");
+                        const paddingY = 4;
 
                         const boxWidth = maxWidth + (paddingX * 2);
-                        const boxHeight = wrapped.length * lineSpacing + (paddingY * 2);
+                        const boxHeight = wrapped.length * outLineSpacing + (paddingY * 2);
 
-                        // draw ONE box
+                        // 🔥 GAP FIX
+                        currentY += paddingY;
+
+                        // BOX
                         doc.setFillColor(0, 0, 0);
                         doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
+                        
+                        doc.setDrawColor(255,255,255);
+                        doc.setLineWidth(0.2);
+                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight);
 
-                        // text
+                        // TEXT
                         doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            doc.text(l, 20 + paddingX, currentY);
-                            currentY += lineSpacing;
+                            doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
+                            currentY += outLineSpacing;
                         });
 
                         doc.setTextColor(0, 0, 0);
+                        doc.setCharSpace(0); // MUST reset char space so other text isn't affected
                         currentY += paddingY;
 
                     } else {
