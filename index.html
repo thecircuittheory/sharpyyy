@@ -933,8 +933,8 @@
                         // 🔥 ONLY HERE → VGA FONT
                         if (hasVGAFont) {
                             doc.setFont("VGA", "normal");
-                            doc.setFontSize(9); // 🔥 sweet spot for VGA
-                            doc.setCharSpace(0.2); // 🔥 improves VGA readability
+                            doc.setFontSize(8.5); // 🔥 sweet spot for VGA
+                            doc.setCharSpace(-0.2); // 🔥 improves VGA readability
                         } else {
                             doc.setFont("courier", "normal");
                             doc.setFontSize(10);
@@ -946,7 +946,8 @@
                         // 🔥 WIDTH CALC
                         let maxWidth = 0;
                         wrapped.forEach(l => {
-                            const w = doc.getTextWidth(l + "  ") + 0.5;
+                            let w = doc.getTextWidth(l + "  ") + 0.5;
+                            if (hasVGAFont) w = w * 0.8; // ✅ scale box width down to match squished text
                             if (w > maxWidth) maxWidth = w;
                         });
 
@@ -973,7 +974,17 @@
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
+                            
+                            if (hasVGAFont) {
+                                doc.saveGraphicsState();
+                                // compress width (0.8 = 80% width)
+                                doc.setCurrentTransformationMatrix(0.8, 0, 0, 1, 0, 0);
+                                doc.text(l, (20 + paddingX) / 0.8, currentY + 1.2);
+                                doc.restoreGraphicsState();
+                            } else {
+                                doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
+                            }
+                            
                             currentY += outLineSpacing;
                         });
 
