@@ -30,7 +30,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'TurboDOS', monospace;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         body {
@@ -201,6 +201,7 @@
         textarea {
             min-height: 100px;
             line-height: 1.6;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         input:focus, textarea:focus {
@@ -449,6 +450,7 @@
             border: none;
             outline: none;
             resize: none;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .modal-footer {
@@ -485,15 +487,14 @@
             .course-details-display { flex-direction: column; text-align: center; }
         }
 
-        /* FORCE FONT ON OUTPUT AREAS */
-        textarea,
-        .modal-editor {
+        /* TURBO OUTPUT CLASS ONLY */
+        .turbo-output {
             font-family: 'TurboDOS', monospace !important;
+            background: #000;
+            color: #fff;
             font-size: 16px;
             line-height: 1.35;
             letter-spacing: 0.5px;
-            background: #000;
-            color: #fff;
         }
     </style>
 </head>
@@ -595,7 +596,7 @@
                             <label>Output</label>
                             <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
                         </div>
-                        <textarea id="output" required autocomplete="off"></textarea>
+                        <textarea id="output" class="turbo-output" required autocomplete="off"></textarea>
                     </div>
 
                     <div class="input-group full-width">
@@ -768,7 +769,15 @@
         function openEditor(id) {
             currentEditingId = id;
             document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
-            document.getElementById('modalTextArea').value = document.getElementById(id).value;
+            
+            const editor = document.getElementById('modalTextArea');
+            editor.value = document.getElementById(id).value;
+            
+            if (id === 'output') {
+                editor.classList.add('turbo-output');
+            } else {
+                editor.classList.remove('turbo-output');
+            }
             
             document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
             document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
