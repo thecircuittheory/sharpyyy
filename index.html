@@ -992,28 +992,40 @@
 
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.replace(/\r/g, '').split('\n');
-                        let maxWidth = 0;
                         let wrapped = [];
-                        
-                        if (hasDosFont) { doc.setFont("VT323", "normal"); doc.setFontSize(14); }
-                        else { doc.setFont("courier", "normal"); doc.setFontSize(11); }
+                        let maxWidth = 0;
 
+                        // 🔥 FORCE TURBO FONT
+                        if (hasDosFont) {
+                            doc.setFont("VT323", "normal");
+                            doc.setFontSize(14);
+                        } else {
+                            doc.setFont("courier", "normal");
+                            doc.setFontSize(11);
+                        }
+
+                        // Wrap + measure
                         lines.forEach(l => {
                             const wr = doc.splitTextToSize(l, 165);
                             wr.forEach(wl => {
                                 wrapped.push(wl);
-                                maxWidth = Math.max(maxWidth, doc.getTextWidth(wl));
+                                const w = doc.getTextWidth(wl);
+                                if (w > maxWidth) maxWidth = w;
                             });
                         });
 
-                        // Calculate full block height
-                        const boxHeight = wrapped.length * lineSpacing;
+                        // 🔥 Dynamic width + padding
+                        const paddingX = 4;
+                        const boxWidth = maxWidth + (paddingX * 2);
 
-                        // Draw ONE continuous black box
+                        // 🔥 Dynamic height
+                        const boxHeight = wrapped.length * lineSpacing + 2;
+
+                        // 🔥 DRAW PERFECT BOX
                         doc.setFillColor(0, 0, 0);
-                        doc.rect(20, currentY - 5, 170, boxHeight + 2, 'F');
+                        doc.rect(20, currentY - 5, boxWidth, boxHeight, 'F');
 
-                        // Print text
+                        // 🔥 TEXT
                         doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
@@ -1027,7 +1039,7 @@
                                 doc.setFontSize(11);
                             }
 
-                            doc.text(l, 22, currentY);
+                            doc.text(l, 20 + paddingX, currentY);
                             currentY += lineSpacing;
                         });
 
