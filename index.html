@@ -7,6 +7,11 @@
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        @font-face {
+            font-family: 'Web437_IBM_VGA_9x16-2x';
+            src: url('./Web437_IBM_VGA_9x16-2x.ttf') format('truetype');
+        }
+
         :root {
             --bg-color: #05050a;
             --cyan: #00f3ff;
@@ -928,58 +933,71 @@
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.replace(/\r/g, '').split('\n');
 
-                        const outLineSpacing = 5.2; // 🔥 tighter + natural
+                        // TRUE CRT/VGA RENDER VIA CANVAS
+                        const canvas = document.createElement("canvas");
+                        const ctx = canvas.getContext("2d");
 
-                        // 🔥 ONLY HERE → VGA FONT
-                        if (hasVGAFont) {
-                            doc.setFont("VGA", "normal");
-                            doc.setFontSize(9); // 🔥 sweet spot for VGA
-                            doc.setCharSpace(0.2); // 🔥 improves VGA readability
-                        } else {
-                            doc.setFont("courier", "normal");
-                            doc.setFontSize(10);
-                            doc.setCharSpace(0);
-                        }
+                        // Apply the loaded Web437 font natively, falling back to standard monospace if not fully loaded.
+                        ctx.font = "16px 'Web437_IBM_VGA_9x16-2x', monospace";
+                        ctx.textBaseline = "top";
 
-                        let wrapped = lines; // 🔥 NO WRAP
-
-                        // 🔥 WIDTH CALC
+                        // Measure exact pixel width
                         let maxWidth = 0;
-                        wrapped.forEach(l => {
-                            const w = doc.getTextWidth(l + "  ") + 0.5;
+                        lines.forEach(l => {
+                            const w = ctx.measureText(l).width;
                             if (w > maxWidth) maxWidth = w;
                         });
 
-                        // 🔥 PERFECT PADDING
-                        const paddingX = doc.getTextWidth("  ");
-                        const paddingY = 4;
+                        // Standard padding (approx width of 2 spaces)
+                        const pad = ctx.measureText("  ").width || 16; 
 
-                        const boxWidth = maxWidth + (paddingX * 2);
-                        const boxHeight = wrapped.length * outLineSpacing + (paddingY * 2);
+                        // Canvas size to perfectly wrap content
+                        canvas.width = maxWidth + (pad * 2);
+                        canvas.height = (lines.length * 18) + pad; // 16px font + line spacing
 
-                        // 🔥 GAP FIX
-                        currentY += paddingY;
+                        // Context state drops after resize, re-apply:
+                        ctx.font = "16px 'Web437_IBM_VGA_9x16-2x', monospace";
+                        ctx.textBaseline = "top";
 
-                        // BOX
-                        doc.setFillColor(0, 0, 0);
-                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
-                        
-                        doc.setDrawColor(255,255,255);
-                        doc.setLineWidth(0.2);
-                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight);
+                        // Solid black background
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                        // TEXT
-                        doc.setTextColor(255, 255, 255);
+                        // Subtle outer white boundary
+                        ctx.strokeStyle = "white";
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
 
-                        wrapped.forEach(l => {
-                            checkBreak(1);
-                            doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
-                            currentY += outLineSpacing;
+                        // Paint the pixel-perfect text
+                        ctx.fillStyle = "white";
+                        lines.forEach((l, i) => {
+                            ctx.fillText(l, pad, i * 18 + 4);
                         });
 
-                        doc.setTextColor(0, 0, 0);
-                        doc.setCharSpace(0); // MUST reset char space so other text isn't affected
-                        currentY += paddingY;
+                        const imgData = canvas.toDataURL("image/png");
+
+                        // 1px approx matches 0.264 mm at 96 dpi
+                        const mmWidth = canvas.width * 0.264;
+                        const mmHeight = canvas.height * 0.264;
+
+                        // Check break constraint for the image block
+                        if (currentY + mmHeight > 270) {
+                            doc.addPage();
+                            drawTemplate();
+                            currentY = 30;
+                        }
+
+                        // Add the perfectly crisp image into the PDF Document
+                        doc.addImage(
+                            imgData,
+                            "PNG",
+                            20,
+                            currentY,
+                            mmWidth,
+                            mmHeight
+                        );
+
+                        currentY += mmHeight + 5;
 
                     } else {
                         doc.setFont("times", "normal");
