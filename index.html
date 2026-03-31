@@ -995,7 +995,7 @@
                         let wrapped = [];
                         let maxWidth = 0;
 
-                        // 🔥 FORCE TURBO FONT
+                        // 🔥 Turbo font ONCE
                         if (hasDosFont) {
                             doc.setFont("VT323", "normal");
                             doc.setFontSize(14);
@@ -1004,47 +1004,35 @@
                             doc.setFontSize(11);
                         }
 
-                        // Wrap + measure
+                        // 🔥 measure longest line (no wrapping)
                         lines.forEach(l => {
-                            const wr = doc.splitTextToSize(l, 165);
-                            wr.forEach(wl => {
-                                wrapped.push(wl);
-                                const w = doc.getTextWidth(wl);
-                                if (w > maxWidth) maxWidth = w;
-                            });
+                            wrapped.push(l);
+                            const w = doc.getTextWidth(l);
+                            if (w > maxWidth) maxWidth = w;
                         });
 
-                        // 🔥 Dynamic width + padding
-                        const paddingX = 4;
+                        // 🔥 PERFECT PADDING (THIS IS THE KEY)
+                        const paddingX = 6;   // left-right gap
+                        const paddingY = 3;   // top-bottom gap
+
                         const boxWidth = maxWidth + (paddingX * 2);
+                        const boxHeight = wrapped.length * lineSpacing + (paddingY * 2);
 
-                        // 🔥 Dynamic height
-                        const boxHeight = wrapped.length * lineSpacing + 2;
-
-                        // 🔥 DRAW PERFECT BOX
+                        // 🔥 DRAW BOX
                         doc.setFillColor(0, 0, 0);
-                        doc.rect(20, currentY - 5, boxWidth, boxHeight, 'F');
+                        doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
 
                         // 🔥 TEXT
                         doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-
-                            if (hasDosFont) {
-                                doc.setFont("VT323", "normal");
-                                doc.setFontSize(14);
-                            } else {
-                                doc.setFont("courier", "normal");
-                                doc.setFontSize(11);
-                            }
-
                             doc.text(l, 20 + paddingX, currentY);
                             currentY += lineSpacing;
                         });
 
                         doc.setTextColor(0, 0, 0);
-                        currentY += lineSpacing / 2;
+                        currentY += paddingY;
                     } else {
                         doc.setFont("times", "normal");
                         doc.setFontSize(12);
