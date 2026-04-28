@@ -490,7 +490,7 @@
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="input-group" style="margin-bottom: 25px;">
                         <label>Register Number</label>
-                        <input type="text" id="loginReg" placeholder="e.g. 710725105001" value="7107251050" maxlength="12" autocomplete="off" required>
+                        <input type="text" id="loginReg" placeholder="e.g. 710725105001" maxlength="12" autocomplete="off" required>
                     </div>
                     <div class="input-group" style="margin-bottom: 40px;">
                         <label>Access Password</label>
@@ -1347,8 +1347,24 @@ No explanation.`;
             unlockInputs();
             isLocked = false;
 
+            // Clear all form contents
+            document.getElementById('studentName').value = '';
+            document.getElementById('regNo').value = '';
+            document.getElementById('expNo').value = '';
+            document.getElementById('expDate').value = '';
+            document.getElementById('expTitle').value = '';
+            document.getElementById('aim').value = '';
+            document.getElementById('algorithm').value = '';
+            document.getElementById('program').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('result').value = '';
+            document.getElementById('autoFillBox').value = '';
+            
+            const aiStatus = document.getElementById("aiStatus");
+            if (aiStatus) aiStatus.classList.remove("visible");
+
             setTimeout(() => {
-                showSystemModal("Submission Complete.\n\nAttempt recorded. The form has been unlocked. Manually lock it again for the next record.");
+                showSystemModal("Submission Complete.\n\nAttempt recorded. The form has been cleared and unlocked for the next record.");
             }, 300);
         }
 
