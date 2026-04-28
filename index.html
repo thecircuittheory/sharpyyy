@@ -752,199 +752,39 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
 
         // System Prompt Storage
-        const SYSTEM_PROMPT = `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering in Single Mode.
-Your function is to standardize lab records, while performing strict validation and minimal correction without altering core logic.
-CORE BEHAVIOR
-
-Think before formatting.
-
-Detect structural inconsistencies.
-
-Correct grammar and syntax errors only where necessary.
-
-Preserve original logic completely.
-STRICTLY DO NOT:
-
-
-Rewrite creatively
-
-Optimize code
-
-Modernize code
-
-Change variable names
-
-Change control flow
-
-Modify algorithm logic
-
-Add or remove computational steps
-Rules:
-
-
-If logic is correct but formatting is wrong → Fix formatting only
-
-If syntax error is obvious → Fix minimal syntax only
-
-If content is missing → Leave blank after colon
-
-If output has contradictions → Keep only valid output
-
-Never infer or hallucinate missing logic
+        const SYSTEM_PROMPT = `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering.
 OUTPUT RULES (ABSOLUTE)
-
-Output ONLY structured records
-
-For one experiment → ONE plain text code block
-
-For multiple experiments → MULTIPLE separate code blocks
+Output ONLY structured records.
 STRICTLY:
-
-
-No language tags in code blocks
-
 No explanations
-
 No comments
-
-No symbols or decorations
-
+No symbols except >>
 No markdown formatting
-
-No text outside code blocks
-FIELD ORDER (MANDATORY)
-Fields MUST appear exactly in this order:
-NAME:
-
-REGISTER_NO:
-
-EXP_NO:
-
-DATE:
-
-TITLE:
-
-AIM:
-
-ALGORITHM:
-
-PROGRAM:
-
-OUTPUT:
-
-RESULT:
-No additions. No reordering.
-TITLE RULES
-
-Convert to Title Case
-
-No period
-
-Do not rephrase, shorten, or expand
-AIM RULES
-
-Exactly ONE formal academic sentence
-
-Must end with a period
-
-No extra explanation
-ALGORITHM RULES
-Format strictly:
-Step 1: ...
-
-Step 2: ...
-
-Capitalize first letter after colon
-
-Each step ends with a period
-
-Maintain original logic order
-
-Do not optimize or modify steps
-
-Do not mention header files, libraries, clrscr(), getch()
-Corrections allowed:
-
-
-Fix numbering
-
-Fix punctuation
-PROGRAM RULES
-
-Preserve exact logic and structure
-
-Maintain Turbo C compatibility
-Must include:
-
-#include <stdio.h>
-
-#include <conio.h>
-
-Ensure valid main()
-
-Ensure clrscr(); and getch(); exist
-
-Fix indentation
-
-Fix obvious syntax errors only
-STRICTLY DO NOT:
-
-
-Rename variables
-
-Optimize logic
-
-Modernize syntax
-Allowed fixes:
-
-
-Missing semicolons
-
-Unbalanced brackets
-
-Formatting
-OUTPUT RULES
-
-Preserve exact spacing and layout
-
-Keep only correct output
-
-Remove contradictions
-
-No paraphrasing
-RESULT RULES
-
-One formal academic sentence
-
-Must end with a period
-
-No explanation
-RENDER SAFETY RULES
-
-Avoid very long continuous lines
-
-Avoid markdown symbols
-
-Keep output clean and render-safe
-FINAL VALIDATION (MANDATORY)
-Before output:
-
-
-Validate structure
-
-Validate syntax
-
-Verify field order
-
-Ensure formatting compliance
-
-Ensure ZERO text outside code blocks
+No text outside content
+FIELD FORMAT (MANDATORY)
+Use ONLY this separator:
+FIELD >> value
+FIELDS ORDER (STRICT)
+NAME >>
+REGISTER_NO >>
+EXP_NO >>
+DATE >>
+TITLE >>
+AIM >>
+ALGORITHM >>
+PROGRAM >>
+OUTPUT >>
+RESULT >>
+RULES
+• Do NOT use colon (:) anywhere
+• Use ONLY ">>" as separator
+• Keep spacing: one space before and after >>
+• Do NOT change logic
+• Do NOT optimize code
+• Fix only syntax errors if obvious
+• Keep output clean and minimal
 FINAL INSTRUCTION
-Return ONLY the final structured record(s).
-
-No reasoning.
-
-No explanation.`;
+Return ONLY the structured record using >> format.`;
 
         function copySystemPrompt() {
             const btn = document.getElementById('copyPromptBtn');
@@ -1218,14 +1058,14 @@ No explanation.`;
             ].join("|");
 
             for (let label of labelVariants) {
-                const regex = new RegExp(label + "\\s*:\\s*([\\s\\S]*?)(?=\\n(?:" + HEADINGS + ")\\s*:|$)", "i");
+                const regex = new RegExp(label + "\\s*(?:>>|:)\\s*([\\s\\S]*?)(?=\\n(?:" + HEADINGS + ")\\s*(?:>>|:)|$)", "i");
                 const match = text.match(regex);
                 if (match && match[1]) return match[1].trim();
             }
             return "";
         }
 
-        function isValidValue(val) { return val && !val.includes(":"); }
+        function isValidValue(val) { return val && !val.includes(":") && !val.includes(">>"); }
 
         function autoFillForm() {
             const text = document.getElementById("autoFillBox").value;
