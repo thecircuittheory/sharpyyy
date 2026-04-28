@@ -1,465 +1,850 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="sakura">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHARPNESS</title>
     <!-- jsPDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #05050a;
-            --cyan: #00f3ff;
-            --magenta: #ff00ff;
-            --blue: #0033ff;
-            --green: #00ffaa;
-            --glass-bg: rgba(10, 10, 20, 0.85);
-            --border-glow: 0 0 10px var(--cyan), inset 0 0 10px var(--cyan);
-            --focus-glow: 0 0 15px var(--magenta), inset 0 0 10px var(--magenta);
-            --smart-glow: 0 0 15px var(--green), inset 0 0 10px rgba(0, 255, 170, 0.2);
+        /* THEME VARIABLES */
+        :root[data-theme="sakura"] {
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --bg-shape-1: #ffd1dc;
+            --bg-shape-2: #fff0f5;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-border: rgba(255, 183, 197, 0.4);
+            --text-primary: #4a3b3c;
+            --text-secondary: #8b7375;
+            --primary: #f48fb1;
+            --primary-hover: #f06292;
+            --primary-light: rgba(244, 143, 177, 0.15);
+            --secondary: #ffb7b2;
+            --accent: #e91e63;
+            --success: #81c784;
+            --success-light: rgba(129, 199, 132, 0.15);
+            --warning: #ffb74d;
+            --danger: #e57373;
+            --shadow: 0 8px 32px rgba(244, 143, 177, 0.15);
+            --input-bg: rgba(255, 255, 255, 0.6);
+            --input-border: #f8bbd0;
+            --input-focus: #f06292;
+        }
+
+        :root[data-theme="cotton-candy"] {
+            --bg-gradient: linear-gradient(135deg, #f4f6fd 0%, #eef2f3 100%);
+            --bg-shape-1: #dbeafe;
+            --bg-shape-2: #fce7f3;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-border: rgba(191, 219, 254, 0.5);
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --primary: #a78bfa;
+            --primary-hover: #8b5cf6;
+            --primary-light: rgba(167, 139, 250, 0.15);
+            --secondary: #93c5fd;
+            --accent: #f472b6;
+            --success: #34d399;
+            --success-light: rgba(52, 211, 153, 0.15);
+            --warning: #fbbf24;
+            --danger: #fb7185;
+            --shadow: 0 8px 32px rgba(167, 139, 250, 0.15);
+            --input-bg: rgba(255, 255, 255, 0.6);
+            --input-border: #c4b5fd;
+            --input-focus: #8b5cf6;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: #fff;
+            background-image: var(--bg-gradient);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px 10px;
             overflow-x: hidden;
-            background: radial-gradient(circle at center, #101025 0%, #05050a 100%);
             position: relative;
             scrollbar-width: thin;
-            scrollbar-color: var(--cyan) rgba(10, 10, 20, 0.9);
+            scrollbar-color: var(--primary) transparent;
         }
 
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track {
-            background: var(--glass-bg);
-            border-left: 1px solid rgba(0, 243, 255, 0.1);
-            border-right: 1px solid rgba(0, 243, 255, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--cyan);
-            border-radius: 2px;
-            border: 2px solid var(--glass-bg);
-        }
-        ::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
-        ::-webkit-scrollbar-corner { background: var(--bg-color); }
-        textarea::-webkit-scrollbar { width: 8px; }
-
-        body::before {
-            content: ''; position: fixed;
+        /* Abstract Animated Background Shapes */
+        .bg-shapes {
+            position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px; z-index: -1;
-            transform: perspective(1000px) rotateX(60deg) translateY(-100px);
-            animation: gridMove 20s linear infinite; pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .shape {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.6;
+            border-radius: 50%;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .shape-1 { width: 500px; height: 500px; background: var(--bg-shape-1); top: -100px; left: -100px; }
+        .shape-2 { width: 600px; height: 600px; background: var(--bg-shape-2); bottom: -150px; right: -100px; animation-delay: -5s; }
+        .shape-3 { width: 400px; height: 400px; background: var(--primary-light); top: 40%; left: 50%; transform: translate(-50%, -50%); animation-duration: 25s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(50px, 30px) rotate(10deg) scale(1.1); }
         }
 
-        @keyframes gridMove {
-            0% { transform: perspective(1000px) rotateX(60deg) translateY(0); }
-            100% { transform: perspective(1000px) rotateX(60deg) translateY(50px); }
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-hover); }
 
         .container { max-width: 1000px; margin: 0 auto; position: relative; z-index: 1; }
 
+        /* Top Controls */
+        .top-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .icon-btn {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text-primary);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+        .icon-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary); color: var(--primary); }
+        .icon-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+        /* Copy Prompt Button */
+        .btn-prompt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--primary);
+            padding: 0 16px;
+            height: 40px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .btn-prompt:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn-prompt svg { width: 16px; height: 16px; fill: currentColor; }
+
         .header-title {
-            text-align: center; font-size: clamp(1.8rem, 8vw, 3rem); font-weight: 900; color: #fff;
-            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan); margin-bottom: 10px;
-            letter-spacing: clamp(2px, 2vw, 8px); text-transform: uppercase;
+            text-align: center; font-size: clamp(2rem, 6vw, 3rem); font-weight: 700; color: var(--primary);
+            margin-bottom: 10px; letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
         }
 
-        .warning-note {
-            text-align: center; color: var(--magenta); font-size: 0.8rem; margin-bottom: 20px;
-            padding: 10px; border: 1px solid var(--magenta); background: rgba(255, 0, 255, 0.05);
-            border-radius: 4px; box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); line-height: 1.4;
+        .glass-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        .cyber-card {
-            background: var(--glass-bg); border: 1px solid var(--cyan); border-radius: 8px;
-            padding: clamp(15px, 5vw, 40px); box-shadow: var(--border-glow); backdrop-filter: blur(15px);
-        }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .full-width { grid-column: 1 / -1; }
-        .input-group { display: flex; flex-direction: column; position: relative; }
         
-        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .input-group { display: flex; flex-direction: column; position: relative; gap: 6px; }
+        
+        .label-row { display: flex; justify-content: space-between; align-items: center; }
         
         label {
-            color: var(--cyan); font-size: 0.75rem; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 1.2px;
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        .checkbox-label { display: flex; flex-direction: row; align-items: center; gap: 10px; cursor: pointer; color: var(--cyan); }
-        .checkbox-label input[type="checkbox"] { width: auto; cursor: pointer; accent-color: var(--cyan); }
-
-        .btn-mini-format {
-            background: rgba(255, 0, 255, 0.1); border: 1px solid var(--magenta); color: var(--magenta);
-            font-size: 0.65rem; padding: 4px 10px; border-radius: 4px; cursor: pointer;
-            transition: 0.3s; text-transform: uppercase;
+        .checkbox-label { 
+            display: flex; flex-direction: row; align-items: center; gap: 10px; 
+            cursor: pointer; color: var(--text-primary); font-weight: 500; 
+            background: var(--input-bg); padding: 12px 16px; border-radius: 12px;
+            border: 1px solid var(--input-border);
         }
-        .btn-mini-format:hover { background: var(--magenta); color: #fff; box-shadow: 0 0 10px var(--magenta); }
+        .checkbox-label input[type="checkbox"] { 
+            width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); 
+        }
+
+        .btn-mini {
+            background: var(--primary-light); border: none; color: var(--primary);
+            font-size: 0.75rem; font-weight: 600; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-mini:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
 
         input[type="text"], input[type="date"], input[type="password"], input[type="number"], textarea {
-            background: rgba(0, 0, 0, 0.7); border: 1px solid var(--blue); color: #fff;
-            padding: 12px; border-radius: 4px; font-size: 0.95rem; outline: none; transition: 0.3s; width: 100%;
+            background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);
+            padding: 14px 16px; border-radius: 12px; font-size: 0.95rem; outline: none; transition: 0.3s; width: 100%;
+            font-family: inherit;
         }
-        textarea { min-height: 100px; line-height: 1.6; }
-        input:focus, textarea:focus { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        textarea { min-height: 120px; line-height: 1.6; resize: vertical; }
+        input:focus, textarea:focus { border-color: var(--input-focus); box-shadow: 0 0 0 4px var(--primary-light); background: #fff; }
+        
+        /* Monospace for code editors */
+        #program, #algorithm, #output { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
 
-        /* Hide native number input spinners */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield; /* Firefox */
-        }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
 
-        /* Number Stepper Buttons */
+        /* Number Stepper */
         .stepper-btn {
-            background: transparent; border: 1px solid var(--green); color: var(--green);
-            width: 45px; height: 45px; border-radius: 4px; font-size: 1.5rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
+            background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);
+            width: 45px; height: 45px; border-radius: 12px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
-        .stepper-btn:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
+        .stepper-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
-        /* SMART PASTE STYLES */
+        /* SMART PASTE */
         .smart-paste-box {
-            border: 1px dashed var(--green) !important; background: rgba(0, 255, 170, 0.05) !important;
-            color: var(--green) !important; min-height: 80px;
+            border: 2px dashed var(--primary) !important; 
+            background: var(--primary-light) !important;
+            color: var(--text-primary) !important; 
+            min-height: 100px;
         }
-        .smart-paste-box:focus { box-shadow: var(--smart-glow) !important; }
-        .smart-paste-label { color: var(--green); display: flex; align-items: center; gap: 10px; }
+        .smart-paste-label { color: var(--primary); display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.95rem; }
         .ai-status {
-            color: #000; background: var(--green); padding: 2px 8px; border-radius: 3px;
-            font-size: 0.65rem; font-weight: bold; opacity: 0; transition: opacity 0.3s ease;
+            color: #fff; background: var(--success); padding: 4px 10px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 600; opacity: 0; transition: opacity 0.3s ease;
         }
         .ai-status.visible { opacity: 1; }
 
         .btn-main {
-            width: 100%; background: transparent; border: 2px solid var(--cyan); color: var(--cyan);
-            padding: 18px; font-size: 1rem; font-weight: bold; text-transform: uppercase;
-            letter-spacing: 3px; border-radius: 4px; cursor: pointer; margin-top: 20px; transition: 0.3s;
+            width: 100%; background: var(--primary); border: none; color: #fff;
+            padding: 16px; font-size: 1rem; font-weight: 600; letter-spacing: 1px; 
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px var(--primary-light);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .btn-main:hover:not(:disabled) { background: var(--cyan); color: #000; box-shadow: 0 0 30px var(--cyan); }
-        .btn-main:disabled { border-color: #555 !important; color: #555 !important; cursor: not-allowed; }
+        .btn-main:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+        .btn-main:disabled { background: var(--text-secondary); opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover:not(:disabled) { background: var(--primary); color: #fff; }
 
-        .course-details-display {
-            background: rgba(0, 243, 255, 0.05); border: 1px dashed var(--cyan); padding: 15px;
-            border-radius: 4px; margin-bottom: 25px; display: flex; justify-content: space-between;
-            align-items: center; gap: 10px; font-size: 0.85rem;
+        .course-details {
+            background: var(--primary-light); border: 1px solid var(--border); padding: 16px 20px;
+            border-radius: 16px; margin-bottom: 24px; display: flex; justify-content: space-between;
+            align-items: center; gap: 10px;
         }
+        .course-info { display: flex; flex-direction: column; gap: 4px; }
+        .course-tag { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+        .course-val { font-size: 1rem; color: var(--text-primary); font-weight: 700; }
 
         /* WATERMARK SECTION */
         .watermark-zone {
-            border: 2px dashed var(--blue); border-radius: 8px; padding: 15px; text-align: center;
-            transition: 0.3s; background: rgba(0, 51, 255, 0.05); position: relative; cursor: pointer;
-            overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 15px; min-height: 80px;
+            border: 2px dashed var(--input-border); border-radius: 16px; padding: 15px; text-align: center;
+            background: var(--input-bg); position: relative; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 15px; min-height: 80px;
         }
-        .watermark-zone:hover { border-color: var(--cyan); background: rgba(0, 243, 255, 0.1); }
+        .watermark-zone:hover { border-color: var(--primary); background: var(--primary-light); }
         .watermark-preview {
-            width: 50px; height: 50px; flex-shrink: 0; border: 1px solid var(--cyan); background: #000;
-            display: flex; align-items: center; justify-content: center; border-radius: 4px; overflow: hidden;
+            width: 50px; height: 50px; flex-shrink: 0; border: 1px solid var(--input-border); background: #fff;
+            display: flex; align-items: center; justify-content: center; border-radius: 10px; overflow: hidden;
         }
         .watermark-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .watermark-info { text-align: left; flex-grow: 1; min-width: 0; }
-        .watermark-filename { font-size: 0.8rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .watermark-filename { font-size: 0.85rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .watermark-status { font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 2px; }
 
         /* MODALS */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 2000; display: none;
-            flex-direction: column; padding: clamp(10px, 3vw, 20px);
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            padding: clamp(10px, 3vw, 20px);
         }
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-content {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: 24px; padding: 24px; width: 100%; max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: slideUp 0.3s ease;
+        }
+        .modal-content.large { max-width: 800px; height: 80vh; display: flex; flex-direction: column; }
+
         .modal-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px; border-bottom: 1px solid var(--magenta); padding-bottom: 10px;
+            margin-bottom: 20px; border-bottom: 1px solid var(--surface-border); padding-bottom: 15px;
         }
-        .modal-header h2 { font-size: clamp(0.9rem, 4vw, 1.2rem); }
+        .modal-header h2 { font-size: 1.2rem; color: var(--primary); font-weight: 700; }
+        
         .editor-container {
-            flex-grow: 1; background: #000; border: 1px solid #333;
-            border-radius: 4px; position: relative; overflow: hidden;
+            flex-grow: 1; border: 1px solid var(--input-border); border-radius: 12px;
+            overflow: hidden; background: #fff; margin-bottom: 20px;
         }
         .modal-editor {
-            width: 100%; height: 100%; background: transparent; color: #00ff41;
-            font-family: 'Consolas', 'Monaco', monospace; font-size: 1rem;
-            padding: 15px; border: none; outline: none; resize: none;
+            width: 100%; height: 100%; background: transparent; color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;
+            padding: 16px; border: none; outline: none; resize: none;
         }
-        .modal-footer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .btn-modal {
-            padding: 12px; border: 1px solid #fff; background: transparent; color: #fff;
-            cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; transition: 0.3s;
+        
+        .modal-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-footer.full { grid-template-columns: 1fr; }
+
+        .status-banner {
+            display: flex; flex-direction: column; align-items: center; gap: 12px; 
+            margin-bottom: 24px; padding: 16px; border: 1px solid var(--success-light); 
+            border-radius: 16px; background: var(--success-light);
         }
-        .btn-save { border-color: var(--cyan); color: var(--cyan); grid-column: span 1; }
-        .btn-save:hover { background: var(--cyan); color: #000; }
-        .btn-close { border-color: var(--magenta); color: var(--magenta); grid-column: span 1; }
-        .btn-close:hover { background: var(--magenta); color: #000; }
-        .btn-clean { border-color: #ffaa00; color: #ffaa00; grid-column: span 2; display: none; }
-        .btn-capitalize { border-color: #00ffaa; color: #00ffaa; grid-column: span 2; }
-        .btn-capitalize:hover { background: #00ffaa; color: #000; box-shadow: 0 0 15px #00ffaa; }
+        .status-text { color: var(--success); font-weight: 700; font-size: 0.95rem; text-align: center; }
+
+        .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+
+        /* Lock Visuals */
+        .locked-input { opacity: 0.6; pointer-events: none; background: rgba(0,0,0,0.02) !important; }
 
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .course-details-display { flex-direction: column; text-align: center; }
-            .action-buttons { grid-template-columns: 1fr !important; }
+            .course-details { flex-direction: column; align-items: flex-start; }
+            .action-buttons { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body autocomplete="off">
-
-    <!-- LOGIN SCREEN -->
-    <div class="container" id="loginContainer" style="display: flex; flex-direction: column; justify-content: center; min-height: 85vh;">
-        <h1 class="header-title">SHARPNESS</h1>
-        <div class="cyber-card" style="max-width: 450px; margin: 0 auto; width: 100%;">
-            <h2 style="color:var(--cyan); text-align:center; margin-bottom: 5px; font-size: 1.2rem; letter-spacing: 2px;">SYSTEM TERMINAL</h2>
-            <p style="color:#666; text-align:center; font-size: 0.8rem; margin-bottom: 25px;">// AUTHENTICATION REQUIRED</p>
-            
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="input-group" style="margin-bottom: 20px;">
-                    <label>Register Number</label>
-                    <input type="text" id="loginReg" placeholder="e.g. 710725105001" value="7107251050" maxlength="12" autocomplete="off" required>
-                </div>
-                <div class="input-group" style="margin-bottom: 30px;">
-                    <label>Access Password</label>
-                    <input type="password" id="loginPass" placeholder="•••••" maxlength="5" autocomplete="off" required>
-                </div>
-                <button type="submit" class="btn-main" id="loginBtn" style="margin-top: 0;">INITIALIZE // LOGIN</button>
-            </form>
-        </div>
+    <!-- Animated Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
     </div>
 
-    <!-- MAIN APP (HIDDEN INITIALLY) -->
-    <div class="container" id="appContainer" style="display: none;">
-        <h1 class="header-title">SHARPNESS</h1>
-        
-        <!-- STATUS BANNER - DISPLAYS REG AND ATTEMPTS HERE -->
-        <div id="securityStatus" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; padding: 15px; border: 1px solid var(--green); border-radius: 4px; background: rgba(0, 255, 170, 0.05); box-shadow: var(--smart-glow);">
-            <div id="securityStatusText" style="color: var(--green); font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-align: center;">
-                [ SESSION ACTIVE ]
-            </div>
-            <button type="button" class="btn-mini-format" style="border-color: var(--green); color: var(--green);" onclick="openAddAttemptsModal()">➕ ADD MORE ATTEMPTS</button>
+    <div class="container">
+        <!-- Top Controls (Theme & Prompt) -->
+        <div class="top-controls">
+            <button class="btn-prompt" id="copyPromptBtn" onclick="copySystemPrompt()" title="Copy Engine Prompt">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                Copy Engine Prompt
+            </button>
+            <button class="icon-btn" onclick="toggleTheme()" title="Switch Theme">
+                <!-- Theme Icon (Palette) -->
+                <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S15.67 9 16.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            </button>
         </div>
 
-        <div class="warning-note">
-            // CAUTION: SYSTEM AUTOMATICALLY UNBOLTS CONTENT. USE THE FORMAT EDITOR FOR PRECISION INDENTS.
-        </div>
-        
-        <div class="cyber-card">
+        <!-- LOGIN SCREEN -->
+        <div id="loginContainer" style="display: flex; flex-direction: column; justify-content: center; min-height: 75vh;">
+            <h1 class="header-title">SHARPNESS</h1>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 30px; font-weight: 500;">Lab Record Generator Engine</p>
             
-            <div class="course-details-display">
-                <div style="min-width: 0;">
-                    <span style="color:var(--magenta)">ID:</span> <span id="displayCode">22UCS202</span><br>
-                    <span style="color:var(--magenta)">NAME:</span> <span id="displayName">C PROGRAMMING</span>
+            <div class="glass-card" style="max-width: 400px; margin: 0 auto; width: 100%;">
+                <h2 style="color:var(--text-primary); text-align:center; margin-bottom: 25px; font-size: 1.2rem; font-weight: 600;">Welcome Back</h2>
+                
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="input-group" style="margin-bottom: 20px;">
+                        <label>Register Number</label>
+                        <input type="text" id="loginReg" placeholder="e.g. 710725105001" value="7107251050" maxlength="12" autocomplete="off" required>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 30px;">
+                        <label>Access Password</label>
+                        <input type="password" id="loginPass" placeholder="•••••" maxlength="5" autocomplete="off" required>
+                    </div>
+                    <button type="submit" class="btn-main" id="loginBtn">Authenticate</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MAIN APP (HIDDEN INITIALLY) -->
+        <div id="appContainer" style="display: none;">
+            <h1 class="header-title">SHARPNESS</h1>
+            
+            <!-- STATUS BANNER -->
+            <div class="status-banner">
+                <div id="securityStatusText" class="status-text">
+                    Session Active
                 </div>
-                <button type="button" class="btn-mini-format" onclick="openCourseModal()" style="flex-shrink: 0;">CONFIG</button>
+                <button type="button" class="btn-mini" style="background: #fff; color: var(--success); border: 1px solid var(--success);" onclick="openAddAttemptsModal()">
+                    <svg style="width:12px; height:12px; display:inline; vertical-align:middle; margin-right:4px;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+                    Add More Attempts
+                </button>
             </div>
 
-            <!-- SMART PASTE MODE -->
-            <div class="input-group full-width" style="margin-bottom: 30px;">
-                <div class="label-row">
-                    <label class="smart-paste-label">
-                        ⚡ SMART PASTE MODE 
-                        <span id="aiStatus" class="ai-status">✓ AI DATA LOADED</span>
-                    </label>
+            <div class="glass-card">
+                <div class="course-details">
+                    <div class="course-info">
+                        <span class="course-tag">Course ID</span>
+                        <span class="course-val" id="displayCode">22UCS202</span>
+                    </div>
+                    <div class="course-info" style="flex-grow: 1;">
+                        <span class="course-tag">Course Name</span>
+                        <span class="course-val" id="displayName">C PROGRAMMING</span>
+                    </div>
+                    <button type="button" class="icon-btn" onclick="openCourseModal()" title="Configure Course">
+                        <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                    </button>
                 </div>
-                <textarea id="autoFillBox" class="smart-paste-box" placeholder="[PASTE AI GENERATED RECORD HERE] // Fields will auto-populate instantly..."></textarea>
-            </div>
 
-            <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
-                <div class="form-grid">
-                    
-                    <div class="input-group full-width">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="firstPageOnly" checked>
-                            Show Name & Reg No on FIRST PAGE ONLY
+                <!-- SMART PASTE MODE -->
+                <div class="input-group full-width" style="margin-bottom: 30px;">
+                    <div class="label-row">
+                        <label class="smart-paste-label">
+                            <svg style="width:16px; height:16px;" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z" fill="currentColor"/></svg>
+                            Smart Paste Mode 
+                            <span id="aiStatus" class="ai-status">✓ Populated</span>
                         </label>
                     </div>
+                    <textarea id="autoFillBox" class="smart-paste-box" placeholder="Paste AI generated record here. Fields will auto-populate instantly..."></textarea>
+                </div>
 
-                    <div class="input-group">
-                        <label>Student Name</label>
-                        <input type="text" id="studentName" placeholder="JOHN DOE" autocomplete="off">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Register Number</label>
-                        <!-- THIS FIELD REMAINS FULLY CUSTOMIZABLE/EDITABLE -->
-                        <input type="text" id="regNo" placeholder="123456789" autocomplete="off" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Experiment Number</label>
-                        <input type="text" id="expNo" required placeholder="01" autocomplete="off">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Date (Optional)</label>
-                        <input type="date" id="expDate" autocomplete="off">
-                    </div>
-
-                    <div class="input-group full-width">
-                        <label>Experiment Title</label>
-                        <input type="text" id="expTitle" required placeholder="IMPLEMENTATION OF LINKED LIST" autocomplete="off">
-                    </div>
-
-                    <!-- TEXT AREAS -->
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Aim</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('aim')">Editor</button>
+                <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
+                    <div class="form-grid">
+                        
+                        <div class="input-group full-width">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="firstPageOnly" checked>
+                                Show Name & Reg No on FIRST PAGE ONLY
+                            </label>
                         </div>
-                        <textarea id="aim" required autocomplete="off"></textarea>
-                    </div>
 
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Algorithm</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('algorithm')">Editor</button>
+                        <div class="input-group">
+                            <label>Student Name</label>
+                            <input type="text" id="studentName" placeholder="John Doe" autocomplete="off">
                         </div>
-                        <textarea id="algorithm" required autocomplete="off"></textarea>
-                    </div>
+                        
+                        <div class="input-group">
+                            <label>Register Number</label>
+                            <input type="text" id="regNo" placeholder="123456789" autocomplete="off" required>
+                        </div>
 
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Program / Source Code</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('program')">Editor</button>
+                        <div class="input-group">
+                            <label>Experiment Number</label>
+                            <input type="text" id="expNo" required placeholder="01" autocomplete="off">
                         </div>
-                        <textarea id="program" required autocomplete="off"></textarea>
-                    </div>
 
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Output</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('output')">Editor</button>
+                        <div class="input-group">
+                            <label>Date (Optional)</label>
+                            <input type="date" id="expDate" autocomplete="off">
                         </div>
-                        <textarea id="output" required autocomplete="off"></textarea>
-                    </div>
 
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Result</label>
-                            <button type="button" class="btn-mini-format" onclick="openEditor('result')">Editor</button>
+                        <div class="input-group full-width">
+                            <label>Experiment Title</label>
+                            <input type="text" id="expTitle" required placeholder="Implementation of Linked List" autocomplete="off">
                         </div>
-                        <textarea id="result" required autocomplete="off"></textarea>
-                    </div>
 
-                    <!-- WATERMARK SECTION -->
-                    <div class="input-group full-width">
-                        <div class="label-row">
-                            <label>Watermark Layer</label>
-                            <button type="button" class="btn-mini-format" onclick="loadRecommendedWatermark(event)">LOAD RECOMMENDED</button>
-                        </div>
-                        <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
-                            <input type="file" id="watermark" accept="image/*" style="display: none;" autocomplete="off">
-                            <div class="watermark-preview" id="wmPreviewBox">
-                                <span id="wmIcon" style="color:var(--blue); font-size: 1.2rem;">❖</span>
-                                <img id="wmImg" style="display: none;">
+                        <!-- TEXT AREAS -->
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Aim</label>
+                                <button type="button" class="btn-mini" onclick="openEditor('aim')">Expand Editor</button>
                             </div>
-                            <div class="watermark-info">
-                                <div class="watermark-status" id="wmStatus" style="font-size: 0.6rem;">STATUS: EMPTY</div>
-                                <div class="watermark-filename" id="wmFilename" style="font-size: 0.7rem;">NO_ASSET.png</div>
-                                <button type="button" id="wmRemoveBtn" class="btn-remove-watermark" style="display: none;" onclick="removeWatermark(event)">REMOVE</button>
+                            <textarea id="aim" required autocomplete="off"></textarea>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Algorithm</label>
+                                <button type="button" class="btn-mini" onclick="openEditor('algorithm')">Expand Editor</button>
+                            </div>
+                            <textarea id="algorithm" required autocomplete="off"></textarea>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Program / Source Code</label>
+                                <button type="button" class="btn-mini" onclick="openEditor('program')">Expand Editor</button>
+                            </div>
+                            <textarea id="program" required autocomplete="off" spellcheck="false"></textarea>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Output</label>
+                                <button type="button" class="btn-mini" onclick="openEditor('output')">Expand Editor</button>
+                            </div>
+                            <textarea id="output" required autocomplete="off" spellcheck="false"></textarea>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Result</label>
+                                <button type="button" class="btn-mini" onclick="openEditor('result')">Expand Editor</button>
+                            </div>
+                            <textarea id="result" required autocomplete="off"></textarea>
+                        </div>
+
+                        <!-- WATERMARK SECTION -->
+                        <div class="input-group full-width">
+                            <div class="label-row">
+                                <label>Watermark Layer</label>
+                                <button type="button" class="btn-mini" onclick="loadRecommendedWatermark(event)">Load Recommended</button>
+                            </div>
+                            <div class="watermark-zone" onclick="document.getElementById('watermark').click()">
+                                <input type="file" id="watermark" accept="image/*" style="display: none;" autocomplete="off">
+                                <div class="watermark-preview" id="wmPreviewBox">
+                                    <span id="wmIcon" style="color:var(--text-secondary);">
+                                        <svg style="width:24px;height:24px;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" fill="currentColor"/></svg>
+                                    </span>
+                                    <img id="wmImg" style="display: none;">
+                                </div>
+                                <div class="watermark-info">
+                                    <div class="watermark-status" id="wmStatus">Status: Empty</div>
+                                    <div class="watermark-filename" id="wmFilename">No asset loaded</div>
+                                    <button type="button" id="wmRemoveBtn" class="btn-mini" style="display: none; background:var(--danger); color:#fff; margin-top:4px;" onclick="removeWatermark(event)">Remove</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn-main btn-outline" id="btnLock" onclick="toggleLock()">
+                            <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg>
+                            Lock Inputs
+                        </button>
+                        <button type="submit" class="btn-main" style="background:var(--warning); color:#fff;" id="btnTest" disabled>Generate (Test)</button>
+                        <button type="button" class="btn-main" style="background:var(--success); color:#fff;" id="btnSatisfied" onclick="submitFinal()" disabled>Satisfied</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- EDITOR MODAL -->
+        <div id="editorModal" class="modal-overlay">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Editor</h2>
+                    <span style="color:var(--text-secondary); font-size: 0.75rem;">System Literal Input</span>
                 </div>
-
-                <div class="action-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;">
-                    <button type="button" class="btn-main" style="margin-top: 0; border-color: var(--cyan); color: var(--cyan);" id="btnLock" onclick="toggleLock()">LOCK</button>
-                    <!-- Buttons are disabled out of the gate until locked -->
-                    <button type="submit" class="btn-main" style="margin-top: 0; border-color: #ffaa00; color: #ffaa00;" id="btnTest" disabled>GENERATE (TEST)</button>
-                    <button type="button" class="btn-main" style="margin-top: 0; border-color: var(--magenta); color: var(--magenta);" id="btnSatisfied" onclick="submitFinal()" disabled>SATISFIED</button>
+                <div class="editor-container">
+                    <textarea id="modalTextArea" class="modal-editor" spellcheck="false"></textarea>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- EDITOR MODAL -->
-    <div id="editorModal" class="modal-overlay">
-        <div class="modal-header">
-            <h2 id="modalTitle" style="color:var(--cyan)">EDITOR</h2>
-            <span style="color:#666; font-size: 0.6rem; text-align: right;">SYSTEM_LITERAL_INPUT</span>
-        </div>
-        <div class="editor-container">
-            <textarea id="modalTextArea" class="modal-editor" spellcheck="false"></textarea>
-        </div>
-        <div class="modal-footer">
-            <button id="cleanBtn" class="btn-modal btn-clean" onclick="purifyCode()">PURIFY CODE (NO INDENTS)</button>
-            <button id="capBtn" class="btn-modal btn-capitalize" onclick="capitalizeText()">SENTENCE CASE (A.a...)</button>
-            <button class="btn-modal btn-save" onclick="saveEditor()">SAVE</button>
-            <button class="btn-modal btn-close" onclick="closeEditor()">CLOSE</button>
-        </div>
-    </div>
-
-    <!-- CONFIG MODAL -->
-    <div id="courseModal" class="modal-overlay" style="justify-content: center; align-items: center;">
-        <div style="width: 100%; max-width: 400px; background: #111; border: 1px solid var(--magenta); padding: 25px; border-radius: 8px;">
-            <h3 style="color:var(--magenta); margin-bottom: 20px; text-align: center; font-size: 1rem;">COURSE_CONFIG</h3>
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>Course Code</label>
-                <input type="text" id="modalCourseCode" value="22UCS202" autocomplete="off">
-            </div>
-            <div class="input-group" style="margin-bottom: 25px;">
-                <label>Course Name</label>
-                <input type="text" id="modalCourseName" value="C PROGRAMMING" autocomplete="off">
-            </div>
-            <button class="btn-main" onclick="saveCourseConfig()" style="padding: 12px; font-size: 0.9rem; margin: 0;">UPDATE</button>
-        </div>
-    </div>
-
-    <!-- SYSTEM ALERTS/PROMPTS MODAL -->
-    <div id="systemModal" class="modal-overlay" style="justify-content: center; align-items: center; z-index: 9999;">
-        <div style="width: 100%; max-width: 400px; background: #111; border: 1px solid var(--cyan); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 0 20px rgba(0,243,255,0.2);">
-            <h3 id="systemModalTitle" style="color:var(--cyan); margin-bottom: 15px; font-size: 1rem; letter-spacing: 2px;">SYSTEM MESSAGE</h3>
-            <p id="systemModalMessage" style="color: #fff; margin-bottom: 20px; font-size: 0.9rem; white-space: pre-wrap;"></p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button id="systemModalCancelBtn" class="btn-main" style="padding: 10px; font-size: 0.9rem; margin: 0; border-color: #666; color: #666; display: none;">CANCEL</button>
-                <button id="systemModalBtn" class="btn-main" style="padding: 10px; font-size: 0.9rem; margin: 0;">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD ATTEMPTS / GPAY MODAL -->
-    <div id="addAttemptsModal" class="modal-overlay" style="justify-content: center; align-items: center; z-index: 9998;">
-        <div style="width: 100%; max-width: 350px; background: #111; border: 1px solid var(--green); padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 0 20px rgba(0,255,170,0.2);">
-            <h3 style="color:var(--green); margin-bottom: 15px; font-size: 1.1rem; letter-spacing: 2px;">ADD ATTEMPTS</h3>
-            
-            <div class="input-group" style="margin-bottom: 15px; text-align: center;">
-                <label style="color: var(--green); margin-bottom: 10px;">Number of Attempts (₹3 / attempt)</label>
-                <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
-                    <button type="button" class="stepper-btn" onclick="adjustAttempts(-1)">−</button>
-                    <input type="number" id="purchaseAttempts" min="1" value="1" style="border-color: var(--green); text-align: center; font-size: 1.5rem; font-weight: bold; width: 80px; padding: 8px;" oninput="calculateTotal()">
-                    <button type="button" class="stepper-btn" onclick="adjustAttempts(1)">+</button>
+                <div class="modal-footer">
+                    <button id="cleanBtn" class="btn-main btn-outline" onclick="purifyCode()">Purify Code</button>
+                    <button id="capBtn" class="btn-main btn-outline" onclick="capitalizeText()">Sentence Case</button>
+                    <button class="btn-main btn-outline" style="border-color:var(--text-secondary); color:var(--text-secondary);" onclick="closeEditor()">Cancel</button>
+                    <button class="btn-main" onclick="saveEditor()">Save Changes</button>
                 </div>
             </div>
-            
-            <div style="color: var(--cyan); font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; text-shadow: 0 0 10px var(--cyan);">
-                TOTAL: ₹<span id="purchaseTotal">3</span>
-            </div>
+        </div>
 
-            <p style="color: #ccc; margin-bottom: 15px; font-size: 0.8rem; line-height: 1.4;">Scan the GPAY QR code below to pay. Contact admin after payment.</p>
-            
-            <div style="background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: inline-block;">
-                <img src="./qr.jpeg" alt="GPay QR Code" style="width: 200px; height: 200px; object-fit: contain; display: block;" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'><rect width=\'200\' height=\'200\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%23333\'>qr.jpeg missing</text></svg>';">
+        <!-- CONFIG MODAL -->
+        <div id="courseModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Course Configuration</h2>
+                </div>
+                <div class="input-group" style="margin-bottom: 16px;">
+                    <label>Course Code</label>
+                    <input type="text" id="modalCourseCode" value="22UCS202" autocomplete="off">
+                </div>
+                <div class="input-group" style="margin-bottom: 24px;">
+                    <label>Course Name</label>
+                    <input type="text" id="modalCourseName" value="C PROGRAMMING" autocomplete="off">
+                </div>
+                <div class="modal-footer full">
+                    <button class="btn-main" onclick="saveCourseConfig()">Update Details</button>
+                </div>
             </div>
+        </div>
 
-            <button class="btn-main" onclick="closeAddAttemptsModal()" style="padding: 10px; font-size: 0.9rem; margin: 0; border-color: var(--green); color: var(--green);">CLOSE</button>
+        <!-- SYSTEM ALERTS/PROMPTS MODAL -->
+        <div id="systemModal" class="modal-overlay" style="z-index: 9999;">
+            <div class="modal-content" style="text-align: center;">
+                <h3 id="systemModalTitle" style="color:var(--primary); margin-bottom: 16px; font-size: 1.1rem;">System Message</h3>
+                <p id="systemModalMessage" style="color: var(--text-primary); margin-bottom: 24px; font-size: 0.95rem; white-space: pre-wrap; line-height: 1.5;"></p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="systemModalCancelBtn" class="btn-main btn-outline" style="display: none; border-color:var(--text-secondary); color:var(--text-secondary);">Cancel</button>
+                    <button id="systemModalBtn" class="btn-main">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD ATTEMPTS MODAL -->
+        <div id="addAttemptsModal" class="modal-overlay" style="z-index: 9998;">
+            <div class="modal-content" style="text-align: center;">
+                <h3 style="color:var(--success); margin-bottom: 16px; font-size: 1.2rem;">Add Attempts</h3>
+                
+                <div class="input-group" style="margin-bottom: 20px; text-align: center; align-items: center;">
+                    <label style="color: var(--text-primary); margin-bottom: 12px;">Number of Attempts (₹3 / attempt)</label>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 16px;">
+                        <button type="button" class="stepper-btn" onclick="adjustAttempts(-1)">−</button>
+                        <input type="number" id="purchaseAttempts" min="1" value="1" style="text-align: center; font-size: 1.5rem; font-weight: bold; width: 80px; padding: 10px;" oninput="calculateTotal()">
+                        <button type="button" class="stepper-btn" onclick="adjustAttempts(1)">+</button>
+                    </div>
+                </div>
+                
+                <div style="color: var(--primary); font-size: 1.5rem; font-weight: 700; margin-bottom: 20px;">
+                    Total: ₹<span id="purchaseTotal">3</span>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5;">Scan the GPay QR code below to pay. Contact admin after payment.</p>
+                
+                <div style="background: #fff; padding: 12px; border-radius: 16px; border: 1px solid var(--surface-border); margin-bottom: 24px; display: inline-block; box-shadow: var(--shadow);">
+                    <img src="./qr.jpeg" alt="GPay QR Code" style="width: 180px; height: 180px; object-fit: contain; display: block;" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\'><rect width=\'180\' height=\'180\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'14\' fill=\'%2394a3b8\'>qr.jpeg missing</text></svg>';">
+                </div>
+
+                <div class="modal-footer full">
+                    <button class="btn-main btn-outline" onclick="closeAddAttemptsModal()">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // --- ⚙️ THEME SWITCHER & PROMPT LOGIC ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'sakura' ? 'cotton-candy' : 'sakura';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('sharpness_theme', newTheme);
+        }
+
+        // Initialize Theme
+        const savedTheme = localStorage.getItem('sharpness_theme') || 'sakura';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // System Prompt Storage
+        const SYSTEM_PROMPT = `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering in Single Mode.
+Your function is to standardize lab records, while performing strict validation and minimal correction without altering core logic.
+CORE BEHAVIOR
+
+Think before formatting.
+
+Detect structural inconsistencies.
+
+Correct grammar and syntax errors only where necessary.
+
+Preserve original logic completely.
+STRICTLY DO NOT:
+
+
+Rewrite creatively
+
+Optimize code
+
+Modernize code
+
+Change variable names
+
+Change control flow
+
+Modify algorithm logic
+
+Add or remove computational steps
+Rules:
+
+
+If logic is correct but formatting is wrong → Fix formatting only
+
+If syntax error is obvious → Fix minimal syntax only
+
+If content is missing → Leave blank after colon
+
+If output has contradictions → Keep only valid output
+
+Never infer or hallucinate missing logic
+OUTPUT RULES (ABSOLUTE)
+
+Output ONLY structured records
+
+For one experiment → ONE plain text code block
+
+For multiple experiments → MULTIPLE separate code blocks
+STRICTLY:
+
+
+No language tags in code blocks
+
+No explanations
+
+No comments
+
+No symbols or decorations
+
+No markdown formatting
+
+No text outside code blocks
+FIELD ORDER (MANDATORY)
+Fields MUST appear exactly in this order:
+NAME:
+
+REGISTER_NO:
+
+EXP_NO:
+
+DATE:
+
+TITLE:
+
+AIM:
+
+ALGORITHM:
+
+PROGRAM:
+
+OUTPUT:
+
+RESULT:
+No additions. No reordering.
+TITLE RULES
+
+Convert to Title Case
+
+No period
+
+Do not rephrase, shorten, or expand
+AIM RULES
+
+Exactly ONE formal academic sentence
+
+Must end with a period
+
+No extra explanation
+ALGORITHM RULES
+Format strictly:
+Step 1: ...
+
+Step 2: ...
+
+Capitalize first letter after colon
+
+Each step ends with a period
+
+Maintain original logic order
+
+Do not optimize or modify steps
+
+Do not mention header files, libraries, clrscr(), getch()
+Corrections allowed:
+
+
+Fix numbering
+
+Fix punctuation
+PROGRAM RULES
+
+Preserve exact logic and structure
+
+Maintain Turbo C compatibility
+Must include:
+
+#include <stdio.h>
+
+#include <conio.h>
+
+Ensure valid main()
+
+Ensure clrscr(); and getch(); exist
+
+Fix indentation
+
+Fix obvious syntax errors only
+STRICTLY DO NOT:
+
+
+Rename variables
+
+Optimize logic
+
+Modernize syntax
+Allowed fixes:
+
+
+Missing semicolons
+
+Unbalanced brackets
+
+Formatting
+OUTPUT RULES
+
+Preserve exact spacing and layout
+
+Keep only correct output
+
+Remove contradictions
+
+No paraphrasing
+RESULT RULES
+
+One formal academic sentence
+
+Must end with a period
+
+No explanation
+RENDER SAFETY RULES
+
+Avoid very long continuous lines
+
+Avoid markdown symbols
+
+Keep output clean and render-safe
+FINAL VALIDATION (MANDATORY)
+Before output:
+
+
+Validate structure
+
+Validate syntax
+
+Verify field order
+
+Ensure formatting compliance
+
+Ensure ZERO text outside code blocks
+FINAL INSTRUCTION
+Return ONLY the final structured record(s).
+
+No reasoning.
+
+No explanation.`;
+
+        function copySystemPrompt() {
+            const btn = document.getElementById('copyPromptBtn');
+            const originalHTML = btn.innerHTML;
+            
+            const fallbackCopyTextToClipboard = (text) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try { document.execCommand('copy'); } catch (err) {}
+                document.body.removeChild(textArea);
+            };
+
+            if (!navigator.clipboard) {
+                fallbackCopyTextToClipboard(SYSTEM_PROMPT);
+            } else {
+                navigator.clipboard.writeText(SYSTEM_PROMPT).catch(err => {
+                    fallbackCopyTextToClipboard(SYSTEM_PROMPT);
+                });
+            }
+
+            btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg> Copied!`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+        }
+
         // --- ⚙️ STEP 1: CONFIG (ACCESS CONTROL DATA) ---
         const START_REG = 710725105001;
         const END_REG   = 710725105063;
@@ -535,7 +920,6 @@
         let currentUserReg = null;
         let currentUserObj = null;
 
-        // Configuration
         let config = {
             courseCode: "22UCS202",
             courseName: "C PROGRAMMING"
@@ -568,15 +952,8 @@
                     modal.classList.remove('active');
                 };
 
-                btnEl.onclick = () => {
-                    cleanup();
-                    resolve(true);
-                };
-
-                cancelBtnEl.onclick = () => {
-                    cleanup();
-                    resolve(false);
-                };
+                btnEl.onclick = () => { cleanup(); resolve(true); };
+                cancelBtnEl.onclick = () => { cleanup(); resolve(false); };
             });
         }
 
@@ -593,20 +970,17 @@
             localStorage.setItem("used_" + reg, val);
             sessionStorage.setItem("used_" + reg, val);
             document.cookie = "used_" + reg + "=" + val + "; max-age=31536000; path=/";
-            localStorage.setItem("last_" + reg, Date.now()); // Timestamp tracking
+            localStorage.setItem("last_" + reg, Date.now());
         }
 
         // --- STATUS BANNER UPDATER ---
         function updateTopStatus() {
             if (!currentUserReg) return;
-            
             const limit = currentUserObj.limit;
             let used = getUsedAttempts(currentUserReg);
-            
             let attemptsLeft = limit === Infinity ? "UNLIMITED" : Math.max(0, limit - used);
-            
             const statusEl = document.getElementById('securityStatusText');
-            statusEl.innerText = `[ SESSION ACTIVE: ${currentUserReg} ] // [ ATTEMPTS LEFT: ${attemptsLeft} ]`;
+            statusEl.innerText = `Active Session: ${currentUserReg} • Attempts Remaining: ${attemptsLeft}`;
         }
 
         // --- ADD ATTEMPTS MODAL CONTROLS ---
@@ -638,70 +1012,59 @@
         // --- 🔐 LOGIN FUNCTION ---
         async function handleLogin(e) {
             e.preventDefault();
-            
             const reg = document.getElementById("loginReg").value.trim();
             const pass = document.getElementById("loginPass").value.trim();
             const btn = document.getElementById("loginBtn");
 
-            btn.innerText = "AUTHENTICATING...";
+            btn.innerText = "Authenticating...";
             btn.disabled = true;
 
-            // 1. Check Range
             if (!/^\d+$/.test(reg) || parseInt(reg) < START_REG || parseInt(reg) > END_REG) {
                 await showSystemModal("Access Denied: Invalid Register Number");
-                btn.innerText = "INITIALIZE // LOGIN";
+                btn.innerText = "Authenticate";
                 btn.disabled = false;
                 return;
             }
 
             const user = USERS[reg];
-
-            // 2. Exists in Registry?
             if (!user) {
                 await showSystemModal("Access Denied: Register Number not configured");
-                btn.innerText = "INITIALIZE // LOGIN";
+                btn.innerText = "Authenticate";
                 btn.disabled = false;
                 return;
             }
 
             let tries = parseInt(localStorage.getItem("try_" + reg)) || 0;
-
-            // 3. Block Check
             if (tries >= 3) {
                 await showSystemModal("SYSTEM BLOCKED: Maximum attempts reached for " + reg);
                 btn.innerText = "LOCKED";
                 return;
             }
 
-            // 4. Password Check
             if (pass !== user.pass) {
                 tries++;
                 localStorage.setItem("try_" + reg, tries);
                 await showSystemModal(`Wrong Password (${tries}/3)`);
-                btn.innerText = "INITIALIZE // LOGIN";
+                btn.innerText = "Authenticate";
                 btn.disabled = false;
                 return;
             }
 
-            // 5. Reset attempts on successful login
             localStorage.removeItem("try_" + reg);
-
-            // 6. Limit Check (Using Multi-Layer Storage)
             let used = getUsedAttempts(reg);
 
             if (user.limit <= 0 || (user.limit !== Infinity && used >= user.limit)) {
-                await showSystemModal("INSUFFICIENT BALANCE: 0 ATTEMPTS REMAINING.\n\nCOMPLETE YOUR PAYMENT TO CONTINUE USING THE WEBSITE.", "DO PAYMENT HERE");
+                await showSystemModal("INSUFFICIENT BALANCE: 0 ATTEMPTS REMAINING.\n\nComplete your payment to continue using the generator.", "Process Payment");
                 openAddAttemptsModal();
-                btn.innerText = "INITIALIZE // LOGIN";
+                btn.innerText = "Authenticate";
                 btn.disabled = false;
                 return;
             }
 
-            // --- 🟢 SUCCESS: Transition to App ---
+            // Success
             currentUserReg = reg;
             currentUserObj = user;
 
-            // Psychological deterrents & Device tracking
             if (!localStorage.getItem("device_" + reg)) {
                 localStorage.setItem("device_" + reg, navigator.userAgent);
                 alert("SECURITY NOTICE: Attempts are linked globally to your Register Number.\n\nAny attempt to bypass or reset local limits will be flagged by the system.");
@@ -709,14 +1072,8 @@
                 alert("SECURITY WARNING: Multiple browser/device usage detected. This session is being flagged for review.");
             }
             
-            // Timestamp logging
-            let lastSync = localStorage.getItem("last_" + reg);
-            if(lastSync) console.log("Last sync:", new Date(parseInt(lastSync)));
-
             document.getElementById("loginContainer").style.display = "none";
             document.getElementById("appContainer").style.display = "block";
-            
-            // Prefill register number for convenience (but it remains FULLY EDITABLE)
             document.getElementById("regNo").value = reg;
 
             updateTopStatus();
@@ -733,32 +1090,23 @@
             ].join("|");
 
             for (let label of labelVariants) {
-                const regex = new RegExp(
-                    label + "\\s*:\\s*([\\s\\S]*?)(?=\\n(?:" + HEADINGS + ")\\s*:|$)",
-                    "i"
-                );
-
+                const regex = new RegExp(label + "\\s*:\\s*([\\s\\S]*?)(?=\\n(?:" + HEADINGS + ")\\s*:|$)", "i");
                 const match = text.match(regex);
-                if (match && match[1]) {
-                    return match[1].trim();
-                }
+                if (match && match[1]) return match[1].trim();
             }
             return "";
         }
 
-        function isValidValue(val) {
-            return val && !val.includes(":");
-        }
+        function isValidValue(val) { return val && !val.includes(":"); }
 
         function autoFillForm() {
             const text = document.getElementById("autoFillBox").value;
             if (!text.trim()) return;
 
-            // Extract using variants
             const name = extractFlexible(text, ["STUDENT NAME", "NAME"]);
             const reg = extractFlexible(text, ["REGISTER_NO", "REGISTER NO", "REG NO", "REGISTRATION NUMBER"]);
             const expNo = extractFlexible(text, ["EXPERIMENT NUMBER", "EXPERIMENT NO", "EXP_NO", "EXP NO"]);
-            const date = extractFlexible(text, ["DATE", "EXP DATE"]); // Browsers might require YYYY-MM-DD
+            const date = extractFlexible(text, ["DATE", "EXP DATE"]);
             const title = extractFlexible(text, ["EXPERIMENT TITLE", "TITLE"]);
             const aim = extractFlexible(text, ["AIM", "OBJECTIVE"]);
             const algo = extractFlexible(text, ["ALGORITHM", "PROCEDURE"]);
@@ -769,13 +1117,10 @@
             let populated = false;
 
             if (isValidValue(name)) { document.getElementById("studentName").value = name; populated = true; }
-            // Completely customizable: SMART PASTE can overwrite Reg No too.
             if (isValidValue(reg)) { document.getElementById("regNo").value = reg; populated = true; }
             if (isValidValue(expNo)) { document.getElementById("expNo").value = expNo; populated = true; }
             
-            // Format check for Date input
             if (date) {
-                // Tries to map common date strings to standard HTML input format
                 const parsedDate = new Date(date);
                 if(!isNaN(parsedDate)) {
                    document.getElementById("expDate").value = parsedDate.toISOString().split('T')[0];
@@ -790,24 +1135,19 @@
             if (output) { document.getElementById("output").value = output; populated = true; }
             if (result) { document.getElementById("result").value = result; populated = true; }
 
-            // Flash success state
             if (populated) {
                 const status = document.getElementById("aiStatus");
                 status.classList.add("visible");
-                setTimeout(() => {
-                    status.classList.remove("visible");
-                }, 3000);
+                setTimeout(() => { status.classList.remove("visible"); }, 3000);
             }
         }
 
-        // Attach Instant Listener
         document.getElementById("autoFillBox").addEventListener("input", autoFillForm);
-        // -------------------------
 
         // --- LOCK & SUBMIT LOGIC ---
         async function toggleLock() {
             if (isLocked) return;
-            const confirmed = await showSystemModal("After locking, only PROGRAM can be edited. Other fields will be frozen.", "CONFIRM", true);
+            const confirmed = await showSystemModal("After locking, only PROGRAM can be edited. Other fields will be frozen.", "Confirm Lock", true);
             if (!confirmed) return;
 
             isLocked = true;
@@ -817,23 +1157,20 @@
                 if (el) {
                     if (el.type === 'checkbox') el.disabled = true;
                     else el.readOnly = true;
-                    el.style.opacity = "0.5";
+                    el.classList.add('locked-input');
                 }
             });
             document.getElementById('autoFillBox').readOnly = true;
-            document.getElementById('autoFillBox').style.opacity = "0.5";
+            document.getElementById('autoFillBox').classList.add('locked-input');
 
             const btnLock = document.getElementById('btnLock');
-            btnLock.innerText = "LOCKED";
-            btnLock.style.borderColor = "#555";
-            btnLock.style.color = "#555";
+            btnLock.innerHTML = `<svg style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg> Locked`;
+            btnLock.style.borderColor = "var(--text-secondary)";
+            btnLock.style.color = "var(--text-secondary)";
             btnLock.disabled = true;
 
-            // Enable Generate and Satisfied functionality ONLY when locked
             document.getElementById('btnTest').disabled = false;
             document.getElementById('btnSatisfied').disabled = false;
-
-            await showSystemModal("Inputs locked. Only PROGRAM can be edited.");
         }
 
         function unlockInputs() {
@@ -843,19 +1180,18 @@
                 if (el) {
                     if (el.type === 'checkbox') el.disabled = false;
                     else el.readOnly = false;
-                    el.style.opacity = "1";
+                    el.classList.remove('locked-input');
                 }
             });
             document.getElementById('autoFillBox').readOnly = false;
-            document.getElementById('autoFillBox').style.opacity = "1";
+            document.getElementById('autoFillBox').classList.remove('locked-input');
 
             const btnLock = document.getElementById('btnLock');
-            btnLock.innerText = "LOCK";
-            btnLock.style.borderColor = "var(--cyan)";
-            btnLock.style.color = "var(--cyan)";
+            btnLock.innerHTML = `<svg style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg> Lock Inputs`;
+            btnLock.style.borderColor = "";
+            btnLock.style.color = "";
             btnLock.disabled = false;
 
-            // Instantly disable Generate and Satisfied functionality
             document.getElementById('btnTest').disabled = true;
             document.getElementById('btnSatisfied').disabled = true;
         }
@@ -866,46 +1202,41 @@
                 return;
             }
             
-            const confirmed = await showSystemModal("Final submission will count as one attempt. Continue?", "YES", true);
+            const confirmed = await showSystemModal("Final submission will count as one attempt. Continue?", "Yes, Submit", true);
             if (!confirmed) return;
             
-            // Limit Check (Multi-Layer)
             let used = getUsedAttempts(currentUserReg);
             if (currentUserObj.limit !== Infinity && used >= currentUserObj.limit) {
                 await showSystemModal(`LIMIT REACHED: Your session has used all allowed generations.`);
                 return;
             }
             
-            // Instantly disable SATISFIED to prevent multi-clicking
             document.getElementById('btnSatisfied').disabled = true; 
             
-            // Deduct attempt
             setUsedAttempts(currentUserReg, used + 1);
             updateTopStatus();
 
-            // Unlock and reset for the next experiment
             unlockInputs();
             isLocked = false;
 
-            // Display clear notification about the automatic state change
             setTimeout(() => {
-                showSystemModal("SUBMISSION COMPLETE.\n\nAttempt recorded. The form has been auto-unlocked. You must manually LOCK it again for your next attempt.");
+                showSystemModal("Submission Complete.\n\nAttempt recorded. The form has been unlocked. Manually lock it again for the next record.");
             }, 300);
         }
 
         // Modal Controls
         function openEditor(id) {
             if (isLocked && id !== 'program') {
-                showSystemModal("Inputs locked. Only PROGRAM can be edited.");
+                showSystemModal("Inputs locked. Only the Source Code can be edited.");
                 return;
             }
 
             currentEditingId = id;
-            document.getElementById('modalTitle').innerText = "EDITOR // " + id.toUpperCase();
+            document.getElementById('modalTitle').innerText = "Editor - " + id.charAt(0).toUpperCase() + id.slice(1);
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
-            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'block' : 'none';
-            document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'block' : 'none';
+            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'flex' : 'none';
+            document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'flex' : 'none';
 
             document.getElementById('editorModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -956,7 +1287,7 @@
                     document.getElementById('wmImg').src = watermarkDataUrl;
                     document.getElementById('wmImg').style.display = 'block';
                     document.getElementById('wmIcon').style.display = 'none';
-                    document.getElementById('wmStatus').innerText = "LINKED";
+                    document.getElementById('wmStatus').innerText = "Linked";
                     document.getElementById('wmFilename').innerText = file.name;
                     document.getElementById('wmRemoveBtn').style.display = 'inline-block';
                 };
@@ -970,18 +1301,17 @@
             document.getElementById('watermark').value = "";
             document.getElementById('wmImg').style.display = 'none';
             document.getElementById('wmIcon').style.display = 'block';
-            document.getElementById('wmStatus').innerText = "EMPTY";
-            document.getElementById('wmFilename').innerText = "NO_ASSET.png";
+            document.getElementById('wmStatus').innerText = "Empty";
+            document.getElementById('wmFilename').innerText = "No asset loaded";
             document.getElementById('wmRemoveBtn').style.display = 'none';
         }
 
         async function loadRecommendedWatermark(event) {
             if(event) event.stopPropagation();
             const btn = event ? event.target : null;
-            if (btn) btn.innerText = "LOADING...";
+            if (btn) btn.innerText = "Loading...";
             
             try {
-                // Safer relative path for GitHub pages
                 const response = await fetch("./watermark.png");
                 if (!response.ok) throw new Error("Image not found");
                 const blob = await response.blob();
@@ -989,23 +1319,19 @@
                 const reader = new FileReader();
                 reader.onloadend = function () {
                     watermarkDataUrl = reader.result;
-
                     document.getElementById('wmImg').src = watermarkDataUrl;
                     document.getElementById('wmImg').style.display = 'block';
                     document.getElementById('wmIcon').style.display = 'none';
-                    document.getElementById('wmStatus').innerText = "RECOMMENDED LOADED";
+                    document.getElementById('wmStatus').innerText = "Recommended Loaded";
                     document.getElementById('wmFilename').innerText = "watermark.png";
                     document.getElementById('wmRemoveBtn').style.display = 'inline-block';
-                    
-                    if (btn) btn.innerText = "LOAD RECOMMENDED";
+                    if (btn) btn.innerText = "Load Recommended";
                 };
-
                 reader.readAsDataURL(blob);
-
             } catch (err) {
                 alert("Failed to load recommended watermark. Ensure 'watermark.png' is in the same folder.");
                 console.error(err);
-                if (btn) btn.innerText = "LOAD RECOMMENDED";
+                if (btn) btn.innerText = "Load Recommended";
             }
         }
 
@@ -1019,59 +1345,46 @@
             const btnTest = document.getElementById('btnTest');
             const btnSat = document.getElementById('btnSatisfied');
             
-            btnTest.innerText = "PROCESSING TEST...";
-            
-            // Always lock them down during generation
+            btnTest.innerText = "Processing...";
             btnTest.disabled = true;
             btnSat.disabled = true;
 
-            // ⚡ Pre-Generation Limit Check
             let deductAttempt = false;
-            if (!isLocked) {
-                deductAttempt = true; // Behave normally
-            }
+            if (!isLocked) deductAttempt = true; 
 
             let used = getUsedAttempts(currentUserReg);
 
             if (deductAttempt && currentUserObj.limit !== Infinity && used >= currentUserObj.limit) {
                 await showSystemModal(`LIMIT REACHED: Your session has used all allowed generations.`);
-                btnTest.innerText = "GENERATE (TEST)";
-                
-                // Allow them to click again ONLY if we are still locked
+                btnTest.innerText = "Generate (Test)";
                 if(isLocked) {
                     btnTest.disabled = false;
                     btnSat.disabled = false;
                 }
-                
                 return;
             }
 
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
-
                 let hasVGAFont = false;
 
                 try {
                     const fontUrl = './Web437_IBM_VGA_9x16-2x.ttf';
                     const res = await fetch(fontUrl);
                     const buffer = await res.arrayBuffer();
-
                     let binary = '';
                     const bytes = new Uint8Array(buffer);
                     for (let i = 0; i < bytes.length; i++) {
                         binary += String.fromCharCode(bytes[i]);
                     }
-
                     doc.addFileToVFS('VGA.ttf', btoa(binary));
                     doc.addFont('VGA.ttf', 'VGA', 'normal');
                     hasVGAFont = true;
-
                 } catch (e) {
                     console.warn("VGA font failed");
                 }
 
-                // Values pulled entirely from the form. Fully customizable by user.
                 const rawName = document.getElementById('studentName').value.trim();
                 const rawReg = document.getElementById('regNo').value.trim();
 
@@ -1102,7 +1415,6 @@
                     doc.setFontSize(14);
                     
                     const firstPageOnly = document.getElementById("firstPageOnly").checked;
-                    // Provide fallback mapping for getting page number depending on jsPDF version format
                     const pageCount = (typeof doc.getNumberOfPages === 'function') ? doc.getNumberOfPages() : doc.internal.getNumberOfPages();
 
                     if (!firstPageOnly || pageCount === 1) {
@@ -1169,40 +1481,32 @@
 
                     if (sec.type === 'OUTPUT') {
                         const lines = sec.content.replace(/\r/g, '').split('\n');
+                        const outLineSpacing = 5.2; 
 
-                        const outLineSpacing = 5.2; // 🔥 tighter + natural
-
-                        // 🔥 ONLY HERE → VGA FONT
                         if (hasVGAFont) {
                             doc.setFont("VGA", "normal");
-                            doc.setFontSize(9); // 🔥 sweet spot for VGA
-                            doc.setCharSpace(0.2); // 🔥 improves VGA readability
+                            doc.setFontSize(9); 
+                            doc.setCharSpace(0.2); 
                         } else {
                             doc.setFont("courier", "normal");
                             doc.setFontSize(10);
                             doc.setCharSpace(0);
                         }
 
-                        let wrapped = lines; // 🔥 NO WRAP
-
-                        // 🔥 WIDTH CALC
+                        let wrapped = lines; 
                         let maxWidth = 0;
                         wrapped.forEach(l => {
                             const w = doc.getTextWidth(l + "  ") + 0.5;
                             if (w > maxWidth) maxWidth = w;
                         });
 
-                        // 🔥 PERFECT PADDING
                         const paddingX = doc.getTextWidth("  ");
                         const paddingY = 4;
-
                         const boxWidth = maxWidth + (paddingX * 2);
                         const boxHeight = wrapped.length * outLineSpacing + (paddingY * 2);
 
-                        // 🔥 GAP FIX
                         currentY += paddingY;
 
-                        // BOX
                         doc.setFillColor(0, 0, 0);
                         doc.rect(20, currentY - paddingY, boxWidth, boxHeight, 'F');
                         
@@ -1210,17 +1514,16 @@
                         doc.setLineWidth(0.2);
                         doc.rect(20, currentY - paddingY, boxWidth, boxHeight);
 
-                        // TEXT
                         doc.setTextColor(255, 255, 255);
 
                         wrapped.forEach(l => {
                             checkBreak(1);
-                            doc.text(l, 20 + paddingX, currentY + 1.2); // 🔥 centers vertically
+                            doc.text(l, 20 + paddingX, currentY + 1.2); 
                             currentY += outLineSpacing;
                         });
 
                         doc.setTextColor(0, 0, 0);
-                        doc.setCharSpace(0); // MUST reset char space so other text isn't affected
+                        doc.setCharSpace(0); 
                         currentY += paddingY;
 
                     } else {
@@ -1243,7 +1546,6 @@
 
                 doc.save(`${regNoValue.trim() || 'NoName'}_Record.pdf`);
 
-                // ⚡ 2. UPDATE USAGE (On the session that logged in)
                 if (deductAttempt) {
                     setUsedAttempts(currentUserReg, used + 1);
                     updateTopStatus();
@@ -1253,9 +1555,7 @@
                 console.error(err);
                 alert("Generation failed.");
             } finally {
-                btnTest.innerText = "GENERATE (TEST)";
-
-                // Strictly enforce button enablement rules based solely on lock state
+                btnTest.innerText = "Generate (Test)";
                 if (isLocked) {
                     btnTest.disabled = false;
                     btnSat.disabled = false;
