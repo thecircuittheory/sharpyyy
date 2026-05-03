@@ -13,7 +13,6 @@
            THEME VARIABLES & MULTICOLOR PALETTES
            ============================================================ */
         :root[data-theme="sakura"] {
-            /* Vibrant Animated Mesh Gradient */
             --bg-color: #ffecd2;
             --blob-1: #fcb69f;
             --blob-2: #ff9a9e;
@@ -28,7 +27,6 @@
             --text-primary: #2d2424;
             --text-secondary: #6e5c5c;
             
-            /* Multicolor Gradient Buttons */
             --primary-grad: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             --primary-grad-hover: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
             
@@ -50,7 +48,6 @@
         }
 
         :root[data-theme="cotton-candy"] {
-            /* Vibrant Animated Mesh Gradient */
             --bg-color: #e0c3fc;
             --blob-1: #8ec5fc;
             --blob-2: #e0c3fc;
@@ -65,7 +62,6 @@
             --text-primary: #1e293b;
             --text-secondary: #475569;
             
-            /* Multicolor Gradient Buttons */
             --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --primary-grad-hover: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             
@@ -108,21 +104,13 @@
             scrollbar-color: var(--primary) transparent;
         }
 
-        /* The Visually Peak Mesh Gradient Background */
         .mesh-background {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            background: var(--bg-color);
-            overflow: hidden;
-            pointer-events: none;
+            position: fixed; inset: 0; z-index: -2;
+            background: var(--bg-color); overflow: hidden; pointer-events: none;
         }
         
         .blob {
-            position: absolute;
-            filter: blur(90px);
-            opacity: 0.8;
-            border-radius: 50%;
+            position: absolute; filter: blur(90px); opacity: 0.8; border-radius: 50%;
             animation: moveBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
         }
         .blob-1 { background: var(--blob-1); width: 60vw; height: 60vw; top: -10%; left: -10%; }
@@ -137,7 +125,6 @@
             100% { transform: translate(15vw, -5vh) scale(1.2) rotate(135deg); }
         }
 
-        /* Glass Overlay for depth */
         .glass-overlay {
             position: fixed; inset: 0; z-index: -1;
             background: rgba(255,255,255,0.1);
@@ -153,9 +140,6 @@
 
         .container { max-width: 1050px; margin: 0 auto; position: relative; z-index: 1; }
 
-        /* ============================================================
-           ANIMATIONS
-           ============================================================ */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -170,22 +154,17 @@
         /* ============================================================
            COMPONENTS
            ============================================================ */
-        /* Top Controls */
         .top-controls {
             display: flex; justify-content: flex-end; gap: 15px;
             margin-bottom: 30px; animation: fadeInUp 0.6s ease backwards;
         }
 
         .icon-btn, .btn-prompt {
-            background: var(--surface-heavy);
-            border: 1px solid var(--surface-border);
-            color: var(--text-primary);
-            border-radius: 50px;
+            background: var(--surface-heavy); border: 1px solid var(--surface-border);
+            color: var(--text-primary); border-radius: 50px;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-ambient);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            cursor: pointer; box-shadow: var(--shadow-ambient);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .icon-btn { width: 45px; height: 45px; }
@@ -193,12 +172,7 @@
         .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
         .btn-prompt { padding: 0 20px; height: 45px; font-size: 0.9rem; font-weight: 600; gap: 8px; color: var(--primary); }
-        .btn-prompt:hover {
-            transform: scale(1.05) translateY(-2px);
-            background: var(--primary-grad);
-            color: #fff; border-color: transparent;
-            box-shadow: var(--shadow-directional);
-        }
+        .btn-prompt:hover { transform: scale(1.05) translateY(-2px); background: var(--primary-grad); color: #fff; border-color: transparent; box-shadow: var(--shadow-directional); }
         .btn-prompt svg { width: 18px; height: 18px; fill: currentColor; }
 
         .header-title {
@@ -209,33 +183,25 @@
             animation: fadeInUp 0.8s ease backwards;
         }
 
-        /* Glass Panels */
         .glass-card {
             background: var(--surface);
             border-top: 1px solid rgba(255,255,255,0.9);
             border-left: 1px solid rgba(255,255,255,0.6);
             border-right: 1px solid rgba(255,255,255,0.3);
             border-bottom: 1px solid rgba(255,255,255,0.3);
-            border-radius: 30px;
-            padding: clamp(25px, 5vw, 50px);
+            border-radius: 30px; padding: clamp(25px, 5vw, 50px);
             box-shadow: var(--shadow-ambient), var(--shadow-directional);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            animation: fadeInUp 0.8s ease backwards;
-            animation-delay: 0.2s;
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            animation: fadeInUp 0.8s ease backwards; animation-delay: 0.2s;
         }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
         .full-width { grid-column: 1 / -1; }
         
         .input-group { display: flex; flex-direction: column; position: relative; gap: 8px; }
-        
         .label-row { display: flex; justify-content: space-between; align-items: center; }
         
-        label {
-            color: var(--text-primary); font-size: 0.9rem; font-weight: 700;
-            letter-spacing: 0.5px; margin-left: 4px;
-        }
+        label { color: var(--text-primary); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.5px; margin-left: 4px; }
 
         .checkbox-label { 
             display: flex; flex-direction: row; align-items: center; gap: 12px; 
@@ -258,70 +224,36 @@
             transform: translateY(-2px); box-shadow: 0 6px 15px var(--primary-light); 
         }
 
-        /* Inputs & Textareas */
-        input[type="text"], input[type="date"], input[type="password"], input[type="number"], textarea {
+        input[type="text"], input[type="date"], input[type="password"], input[type="number"], textarea, select {
             background: var(--input-bg); border: 1.5px solid var(--input-border); color: var(--text-primary);
             padding: 16px 20px; border-radius: 16px; font-size: 1rem; font-weight: 500; outline: none; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 100%;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 4px 10px rgba(0,0,0,0.02);
         }
         textarea { min-height: 140px; line-height: 1.7; resize: vertical; }
-        input:focus, textarea:focus { 
-            border-color: var(--input-focus); 
-            background: rgba(255,255,255,0.9);
-            box-shadow: 0 0 0 4px var(--primary-light), 0 10px 20px rgba(0,0,0,0.05); 
-            transform: translateY(-2px);
+        input:focus, textarea:focus, select:focus { 
+            border-color: var(--input-focus); background: rgba(255,255,255,0.9);
+            box-shadow: 0 0 0 4px var(--primary-light), 0 10px 20px rgba(0,0,0,0.05); transform: translateY(-2px);
         }
+        select { appearance: none; cursor: pointer; font-weight: 700; }
         
-        /* Fixed Prefix Input UI */
         .prefix-input-wrapper {
-            display: flex;
-            align-items: center;
-            background: var(--input-bg);
-            border: 1.5px solid var(--input-border);
-            border-radius: 16px;
-            overflow: hidden;
+            display: flex; align-items: center; background: var(--input-bg);
+            border: 1.5px solid var(--input-border); border-radius: 16px; overflow: hidden;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 4px 10px rgba(0,0,0,0.02);
         }
         .prefix-input-wrapper:focus-within {
-            border-color: var(--input-focus); 
-            background: rgba(255,255,255,0.9);
-            box-shadow: 0 0 0 4px var(--primary-light), 0 10px 20px rgba(0,0,0,0.05); 
-            transform: translateY(-2px);
+            border-color: var(--input-focus); background: rgba(255,255,255,0.9);
+            box-shadow: 0 0 0 4px var(--primary-light), 0 10px 20px rgba(0,0,0,0.05); transform: translateY(-2px);
         }
-        .prefix-text {
-            padding: 16px 0 16px 20px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 700;
-            user-select: none;
-            pointer-events: none;
-            letter-spacing: 1px;
-        }
-        .prefix-input-wrapper input {
-            border: none;
-            background: transparent;
-            box-shadow: none;
-            padding: 16px 20px 16px 4px;
-            width: 100%;
-            transform: none !important;
-            letter-spacing: 1px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        .prefix-input-wrapper input:focus {
-            box-shadow: none;
-            background: transparent;
-            transform: none !important;
-        }
-
-        #program, #algorithm, #output { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+        .prefix-text { padding: 16px 0 16px 20px; color: var(--text-secondary); font-size: 1rem; font-weight: 700; user-select: none; pointer-events: none; letter-spacing: 1px; }
+        .prefix-input-wrapper input { border: none; background: transparent; box-shadow: none; padding: 16px 20px 16px 4px; width: 100%; transform: none !important; letter-spacing: 1px; font-weight: 800; color: var(--primary); }
+        .prefix-input-wrapper input:focus { box-shadow: none; background: transparent; transform: none !important; }
 
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* Number Stepper */
         .stepper-btn {
             background: var(--surface-heavy); border: 1px solid var(--input-border); color: var(--primary);
             width: 50px; height: 50px; border-radius: 14px; font-size: 1.5rem; font-weight: bold;
@@ -330,13 +262,9 @@
         }
         .stepper-btn:hover { background: var(--primary); color: #fff; transform: scale(1.05); }
 
-        /* SMART PASTE */
         .smart-paste-box {
-            border: 2px dashed var(--success) !important; 
-            background: rgba(255,255,255,0.6) !important;
-            color: var(--success) !important; 
-            min-height: 120px;
-            font-weight: 600;
+            border: 2px dashed var(--success) !important; background: rgba(255,255,255,0.6) !important;
+            color: var(--success) !important; min-height: 120px; font-weight: 600;
             animation: pulseGlow 3s infinite;
         }
         .smart-paste-box:focus { background: #fff !important; animation: none; border-style: solid !important;}
@@ -348,31 +276,20 @@
         }
         .ai-status.visible { opacity: 1; transform: translateY(0); }
 
-        /* MULTICOLOR BUTTONS */
         .btn-main {
-            width: 100%; border: none; color: #fff;
-            padding: 18px; font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; 
-            border-radius: 16px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background-image: var(--primary-grad);
-            background-size: 200% auto;
+            width: 100%; border: none; color: #fff; padding: 18px; font-size: 1.1rem; font-weight: 700; 
+            letter-spacing: 1px; border-radius: 16px; cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-image: var(--primary-grad); background-size: 200% auto;
             box-shadow: 0 10px 20px -5px var(--surface-border-glow);
-            display: flex; justify-content: center; align-items: center; gap: 12px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex; justify-content: center; align-items: center; gap: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .btn-main:hover:not(:disabled) { 
-            background-position: right center; 
-            transform: translateY(-4px); 
-            box-shadow: 0 15px 30px -5px var(--primary); 
-        }
+        .btn-main:hover:not(:disabled) { background-position: right center; transform: translateY(-4px); box-shadow: 0 15px 30px -5px var(--primary); }
         .btn-main:disabled { background: var(--text-secondary); opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        .btn-outline { 
-            background: var(--surface-heavy); border: 2px solid var(--primary); color: var(--primary); 
-            text-shadow: none;
-        }
+        .btn-outline { background: var(--surface-heavy); border: 2px solid var(--primary); color: var(--primary); text-shadow: none; }
         .btn-outline:hover:not(:disabled) { background: var(--primary-grad); color: #fff; border-color: transparent; }
 
-        /* Course Info Widget */
         .course-details {
             background: var(--surface-heavy); border: 1px solid rgba(255,255,255,0.8); padding: 20px 24px;
             border-radius: 20px; margin-bottom: 30px; display: flex; justify-content: space-between;
@@ -382,7 +299,6 @@
         .course-tag { font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;}
         .course-val { font-size: 1.2rem; color: var(--primary); font-weight: 800; }
 
-        /* WATERMARK SECTION */
         .watermark-zone {
             border: 2px dashed var(--input-border); border-radius: 20px; padding: 20px; text-align: center;
             background: var(--surface-heavy); position: relative; cursor: pointer;
@@ -392,23 +308,17 @@
         .watermark-zone:hover { border-color: var(--primary); background: #fff; transform: translateY(-2px); box-shadow: var(--shadow-ambient);}
         .watermark-preview {
             width: 60px; height: 60px; flex-shrink: 0; border: 1px solid var(--input-border); background: #fff;
-            display: flex; align-items: center; justify-content: center; border-radius: 14px; overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         .watermark-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .watermark-info { text-align: left; flex-grow: 1; min-width: 0; }
         .watermark-filename { font-size: 0.95rem; color: var(--text-primary); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .watermark-status { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; text-transform: uppercase;}
 
-        /* ============================================================
-           MODALS & ALERTS (MASSIVELY UPGRADED)
-           ============================================================ */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 2000; display: none; align-items: center; justify-content: center;
-            padding: clamp(15px, 3vw, 20px);
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 2000; display: none; align-items: center; justify-content: center; padding: clamp(15px, 3vw, 20px);
         }
         .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
         
@@ -419,31 +329,21 @@
             animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative; overflow: hidden;
         }
-        /* Modal glow behind */
         .modal-content::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: radial-gradient(circle, var(--surface-border-glow) 0%, transparent 70%);
             opacity: 0.5; z-index: -1; pointer-events: none;
         }
-
         .modal-content.large { max-width: 900px; height: 85vh; display: flex; flex-direction: column; }
 
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px; border-bottom: 2px solid var(--surface-border); padding-bottom: 15px;
-        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid var(--surface-border); padding-bottom: 15px; }
         .modal-header h2 { font-size: 1.4rem; color: var(--primary); font-weight: 800; letter-spacing: -0.5px;}
         
         .editor-container {
             flex-grow: 1; border: 2px solid var(--input-border); border-radius: 16px;
-            overflow: hidden; background: #fff; margin-bottom: 25px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.02);
+            overflow: hidden; background: #fff; margin-bottom: 25px; box-shadow: inset 0 4px 10px rgba(0,0,0,0.02);
         }
-        .modal-editor {
-            width: 100%; height: 100%; background: transparent; color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace; font-size: 1rem;
-            padding: 20px; border: none; outline: none; resize: none;
-        }
+        .modal-editor { width: 100%; height: 100%; background: transparent; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 1rem; padding: 20px; border: none; outline: none; resize: none; }
         
         .modal-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .modal-footer.full { grid-template-columns: 1fr; }
@@ -453,41 +353,22 @@
             margin-bottom: 30px; padding: 20px; border: 1px solid var(--success-light); 
             border-radius: 20px; background: rgba(16, 185, 129, 0.1);
             box-shadow: 0 10px 30px rgba(16, 185, 129, 0.05), inset 0 2px 5px rgba(255,255,255,0.5);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.8s ease backwards;
-            animation-delay: 0.1s;
+            backdrop-filter: blur(10px); animation: fadeInUp 0.8s ease backwards; animation-delay: 0.1s;
         }
         .status-text { color: var(--success); font-weight: 800; font-size: 1.1rem; text-align: center; }
 
         .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
 
-        /* Lock Visuals */
         .locked-input { opacity: 0.5; pointer-events: none; filter: grayscale(50%); background: rgba(0,0,0,0.02) !important; }
 
-        /* ============================================================
-           GIANT RESPONSIVE QR CODE MODAL 
-           ============================================================ */
-        #addAttemptsModal .modal-content {
-            max-width: 500px;
-        }
+        #addAttemptsModal .modal-content { max-width: 500px; }
         .qr-wrapper {
-            width: 100%;
-            max-width: 300px; /* Big and clean */
-            aspect-ratio: 1;
-            margin: 0 auto 30px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%; max-width: 300px; aspect-ratio: 1; margin: 0 auto 30px; background: #fff;
+            padding: 20px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .qr-wrapper:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 30px 50px rgba(0,0,0,0.15); }
-        .qr-wrapper img {
-            width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
-        }
+        .qr-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
         @keyframes slideUp { from { transform: translateY(40px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 
@@ -496,12 +377,12 @@
             .course-details { flex-direction: column; align-items: flex-start; }
             .action-buttons { grid-template-columns: 1fr; }
             .header-title { font-size: 2.2rem; }
-            .qr-wrapper { max-width: 80vw; padding: 15px; border-radius: 20px;} /* Perfect on mobile */
+            .qr-wrapper { max-width: 80vw; padding: 15px; border-radius: 20px;} 
+            #multiControls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body autocomplete="off">
-    <!-- Animated Background Shapes -->
     <div class="mesh-background">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -511,7 +392,7 @@
     <div class="glass-overlay"></div>
 
     <div class="container">
-        <!-- Top Controls (Theme & Prompt) -->
+        <!-- Top Controls -->
         <div class="top-controls">
             <button class="btn-prompt" id="copyPromptBtn" onclick="copySystemPrompt()" title="Copy Engine Prompt">
                 <svg viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
@@ -529,7 +410,6 @@
             
             <div class="glass-card" style="max-width: 450px; margin: 0 auto; width: 100%;">
                 <h2 style="color:var(--text-primary); text-align:center; margin-bottom: 30px; font-size: 1.5rem; font-weight: 800;">Welcome Back</h2>
-                
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="input-group" style="margin-bottom: 25px;">
                         <label>Register Number</label>
@@ -547,15 +427,12 @@
             </div>
         </div>
 
-        <!-- MAIN APP (HIDDEN INITIALLY) -->
+        <!-- MAIN APP -->
         <div id="appContainer" style="display: none;">
             <h1 class="header-title">SHARPNESS</h1>
             
-            <!-- STATUS BANNER -->
             <div class="status-banner">
-                <div id="securityStatusText" class="status-text">
-                    Session Active
-                </div>
+                <div id="securityStatusText" class="status-text">Session Active</div>
                 <button type="button" class="btn-mini" style="background: #fff; color: var(--success); border: 1px solid var(--success); font-size: 0.9rem; padding: 8px 18px;" onclick="openAddAttemptsModal()">
                     <svg style="width:16px; height:16px; display:inline; vertical-align:middle; margin-right:6px;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
                     Add More Attempts
@@ -577,7 +454,6 @@
                     </button>
                 </div>
 
-                <!-- SMART PASTE MODE -->
                 <div class="input-group full-width" style="margin-bottom: 40px;">
                     <div class="label-row">
                         <label class="smart-paste-label">
@@ -586,12 +462,11 @@
                             <span id="aiStatus" class="ai-status">✓ Instantly Populated</span>
                         </label>
                     </div>
-                    <textarea id="autoFillBox" class="smart-paste-box" placeholder="Paste AI generated record here. Fields will auto-populate instantly with high precision..."></textarea>
+                    <textarea id="autoFillBox" class="smart-paste-box" placeholder="Paste AI generated record here. Fields will auto-populate instantly..."></textarea>
                 </div>
 
                 <form id="recordForm" onsubmit="generatePDF(event)" autocomplete="off">
                     <div class="form-grid">
-                        
                         <div class="input-group full-width">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="firstPageOnly" checked>
@@ -603,17 +478,14 @@
                             <label>Student Name</label>
                             <input type="text" id="studentName" placeholder="John Doe" autocomplete="off">
                         </div>
-                        
                         <div class="input-group">
                             <label>Register Number</label>
                             <input type="text" id="regNo" placeholder="123456789" autocomplete="off" required>
                         </div>
-
                         <div class="input-group">
                             <label>Experiment Number</label>
                             <input type="text" id="expNo" required placeholder="01" autocomplete="off">
                         </div>
-
                         <div class="input-group">
                             <label>Date (Optional)</label>
                             <input type="date" id="expDate" autocomplete="off">
@@ -624,7 +496,32 @@
                             <input type="text" id="expTitle" required placeholder="Implementation of Linked List" autocomplete="off">
                         </div>
 
-                        <!-- TEXT AREAS -->
+                        <!-- MODE SELECTOR -->
+                        <div class="input-group full-width">
+                            <label>Generation Mode</label>
+                            <select id="modeSelect" onchange="handleModeChange()">
+                                <option value="default">Default Mode (1 Algo, 1 Prog, 1 Out)</option>
+                                <option value="multi">Multi Mode (Multiple Algos, Progs, Outs)</option>
+                            </select>
+                        </div>
+
+                        <!-- MULTI CONTROLS -->
+                        <div id="multiControls" class="full-width" style="display:none; grid-template-columns: repeat(3, 1fr); gap: 28px;">
+                            <div class="input-group">
+                                <label>No. of Algorithms</label>
+                                <input type="number" id="algCount" min="1" max="5" value="1" onchange="generateMultiFields()">
+                            </div>
+                            <div class="input-group">
+                                <label>No. of Programs</label>
+                                <input type="number" id="progCount" min="1" max="5" value="1" onchange="generateMultiFields()">
+                            </div>
+                            <div class="input-group">
+                                <label>No. of Outputs</label>
+                                <input type="number" id="opCount" min="1" max="5" value="1" onchange="generateMultiFields()">
+                            </div>
+                        </div>
+
+                        <!-- ALWAYS DEFAULT: AIM -->
                         <div class="input-group full-width">
                             <div class="label-row">
                                 <label>Aim</label>
@@ -633,30 +530,37 @@
                             <textarea id="aim" required autocomplete="off"></textarea>
                         </div>
 
-                        <div class="input-group full-width">
-                            <div class="label-row">
-                                <label>Algorithm</label>
-                                <button type="button" class="btn-mini" onclick="openEditor('algorithm')">Expand Editor</button>
+                        <!-- DEFAULT FIELDS ZONE -->
+                        <div id="defaultContainer" class="full-width" style="display:contents;">
+                            <div class="input-group full-width">
+                                <div class="label-row">
+                                    <label>Algorithm</label>
+                                    <button type="button" class="btn-mini" onclick="openEditor('algorithm')">Expand Editor</button>
+                                </div>
+                                <textarea id="algorithm" required autocomplete="off"></textarea>
                             </div>
-                            <textarea id="algorithm" required autocomplete="off"></textarea>
+                            <div class="input-group full-width">
+                                <div class="label-row">
+                                    <label>Program / Source Code</label>
+                                    <button type="button" class="btn-mini" onclick="openEditor('program')">Expand Editor</button>
+                                </div>
+                                <textarea id="program" required autocomplete="off" spellcheck="false" style="font-family: 'JetBrains Mono', monospace;"></textarea>
+                            </div>
+                            <div class="input-group full-width">
+                                <div class="label-row">
+                                    <label>Output</label>
+                                    <button type="button" class="btn-mini" onclick="openEditor('output')">Expand Editor</button>
+                                </div>
+                                <textarea id="output" required autocomplete="off" spellcheck="false" style="font-family: 'JetBrains Mono', monospace;"></textarea>
+                            </div>
                         </div>
 
-                        <div class="input-group full-width">
-                            <div class="label-row">
-                                <label>Program / Source Code</label>
-                                <button type="button" class="btn-mini" onclick="openEditor('program')">Expand Editor</button>
-                            </div>
-                            <textarea id="program" required autocomplete="off" spellcheck="false"></textarea>
+                        <!-- MULTI FIELDS ZONE -->
+                        <div id="multiContainer" class="full-width" style="display:none; flex-direction:column; gap:28px;">
+                            <!-- Auto-generated multi-textareas will appear here -->
                         </div>
 
-                        <div class="input-group full-width">
-                            <div class="label-row">
-                                <label>Output</label>
-                                <button type="button" class="btn-mini" onclick="openEditor('output')">Expand Editor</button>
-                            </div>
-                            <textarea id="output" required autocomplete="off" spellcheck="false"></textarea>
-                        </div>
-
+                        <!-- ALWAYS DEFAULT: RESULT -->
                         <div class="input-group full-width">
                             <div class="label-row">
                                 <label>Result</label>
@@ -751,7 +655,7 @@
             </div>
         </div>
 
-        <!-- ADD ATTEMPTS MODAL (Massive QR Upgrade) -->
+        <!-- ADD ATTEMPTS MODAL -->
         <div id="addAttemptsModal" class="modal-overlay" style="z-index: 9998;">
             <div class="modal-content" style="text-align: center;">
                 <h3 style="color:var(--success); margin-bottom: 20px; font-size: 1.5rem; font-weight: 800;">Add Attempts</h3>
@@ -771,7 +675,6 @@
 
                 <p style="color: var(--text-secondary); margin-bottom: 25px; font-size: 0.95rem; line-height: 1.6; font-weight: 500;">Scan the GPay QR code below to pay. Contact admin after payment to unlock attempts.</p>
                 
-                <!-- NEW GIANT RESPONSIVE QR CONTAINER -->
                 <div class="qr-wrapper">
                     <img src="./qr.jpeg" alt="GPay QR Code" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'><rect width=\'300\' height=\'300\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'16\' font-weight=\'bold\' fill=\'%2394a3b8\'>qr.jpeg missing</text></svg>';">
                 </div>
@@ -793,12 +696,15 @@
             localStorage.setItem('sharpness_theme', newTheme);
         }
 
-        // Initialize Theme
         const savedTheme = localStorage.getItem('sharpness_theme') || 'sakura';
         document.documentElement.setAttribute('data-theme', savedTheme);
 
-        // System Prompt Storage
-const SYSTEM_PROMPT = `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering.
+        // --- DYNAMIC MULTI PROMPT ENGINE ---
+        function getSystemPrompt() {
+            const mode = document.getElementById("modeSelect") ? document.getElementById("modeSelect").value : "default";
+
+            if (mode === "default") {
+                return `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering.
 
 OUTPUT RULES (ABSOLUTE)
 Output ONLY structured records.
@@ -835,8 +741,52 @@ RULES
 
 FINAL INSTRUCTION
 Return ONLY the structured record using >> format.`;
+            }
+
+            const algN = Math.min(parseInt(document.getElementById("algCount").value) || 1, 5);
+            const progN = Math.min(parseInt(document.getElementById("progCount").value) || 1, 5);
+            const opN = Math.min(parseInt(document.getElementById("opCount").value) || 1, 5);
+
+            let prompt = `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering.
+
+OUTPUT RULES (ABSOLUTE)
+• Output ONLY structured records
+• Use ONLY >>
+• No extra text
+
+MULTI MODE ACTIVE
+IMPORTANT: Generate EXACTLY the numbered fields requested below.
+
+FORMAT:
+NAME >>
+REGISTER_NO >>
+EXP_NO >>
+DATE >>
+TITLE >>
+AIM >>
+`;
+
+            for (let i = 1; i <= algN; i++) prompt += `ALGORITHM ${i} >>\n`;
+            for (let i = 1; i <= progN; i++) prompt += `PROGRAM ${i} >>\n`;
+            for (let i = 1; i <= opN; i++) prompt += `OUTPUT ${i} >>\n`;
+
+            prompt += `\nRESULT >>\n\nRULES
+• ":" is ALLOWED inside content (for printf, steps, labels like Step 1:, etc.)
+• Use ONLY ">>" as field separator
+• Keep spacing: one space before and after >>
+• Do NOT change logic
+• Do NOT optimize code
+• Fix only syntax errors if obvious
+• Keep output clean and minimal
+
+FINAL INSTRUCTION
+Return ONLY the structured record using >> format.`;
+
+            return prompt;
+        }
 
         function copySystemPrompt() {
+            const promptStr = getSystemPrompt();
             const btn = document.getElementById('copyPromptBtn');
             const originalHTML = btn.innerHTML;
             
@@ -852,15 +802,86 @@ Return ONLY the structured record using >> format.`;
             };
 
             if (!navigator.clipboard) {
-                fallbackCopyTextToClipboard(SYSTEM_PROMPT);
+                fallbackCopyTextToClipboard(promptStr);
             } else {
-                navigator.clipboard.writeText(SYSTEM_PROMPT).catch(err => {
-                    fallbackCopyTextToClipboard(SYSTEM_PROMPT);
+                navigator.clipboard.writeText(promptStr).catch(err => {
+                    fallbackCopyTextToClipboard(promptStr);
                 });
             }
 
             btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></svg> Copied!`;
             setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+        }
+
+        // --- MULTI-MODE CONTROLS ---
+        function handleModeChange() {
+            const mode = document.getElementById("modeSelect").value;
+            const controls = document.getElementById("multiControls");
+            const multiContainer = document.getElementById("multiContainer");
+            const defaultContainer = document.getElementById("defaultContainer");
+
+            if (mode === "multi") {
+                controls.style.display = "grid";
+                multiContainer.style.display = "flex";
+                defaultContainer.style.display = "none";
+                generateMultiFields();
+            } else {
+                controls.style.display = "none";
+                multiContainer.style.display = "none";
+                defaultContainer.style.display = "contents";
+                multiContainer.innerHTML = "";
+            }
+        }
+
+        function generateMultiFields() {
+            let algN = Math.min(Math.max(parseInt(document.getElementById("algCount").value) || 1, 1), 5);
+            let progN = Math.min(Math.max(parseInt(document.getElementById("progCount").value) || 1, 1), 5);
+            let opN = Math.min(Math.max(parseInt(document.getElementById("opCount").value) || 1, 1), 5);
+
+            document.getElementById("algCount").value = algN;
+            document.getElementById("progCount").value = progN;
+            document.getElementById("opCount").value = opN;
+
+            const container = document.getElementById("multiContainer");
+            let html = "";
+
+            // ALGORITHMS
+            for (let i = 1; i <= algN; i++) {
+                html += `
+                <div class="input-group full-width">
+                    <div class="label-row">
+                        <label>${algN === 1 ? "Algorithm" : "Algorithm " + i}</label>
+                        <button type="button" class="btn-mini" onclick="openEditor('algorithm_${i}')">Expand Editor</button>
+                    </div>
+                    <textarea id="algorithm_${i}" required autocomplete="off"></textarea>
+                </div>`;
+            }
+
+            // PROGRAMS
+            for (let i = 1; i <= progN; i++) {
+                html += `
+                <div class="input-group full-width">
+                    <div class="label-row">
+                        <label>${progN === 1 ? "Program / Source Code" : "Program / Source Code " + i}</label>
+                        <button type="button" class="btn-mini" onclick="openEditor('program_${i}')">Expand Editor</button>
+                    </div>
+                    <textarea id="program_${i}" required autocomplete="off" spellcheck="false" style="font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>`;
+            }
+
+            // OUTPUTS
+            for (let i = 1; i <= opN; i++) {
+                html += `
+                <div class="input-group full-width">
+                    <div class="label-row">
+                        <label>${opN === 1 ? "Output" : "Output " + i}</label>
+                        <button type="button" class="btn-mini" onclick="openEditor('output_${i}')">Expand Editor</button>
+                    </div>
+                    <textarea id="output_${i}" required autocomplete="off" spellcheck="false" style="font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>`;
+            }
+
+            container.innerHTML = html;
         }
 
         // --- ⚙️ STEP 1: CONFIG (ACCESS CONTROL DATA) ---
@@ -909,9 +930,9 @@ Return ONLY the structured record using >> format.`;
             "710725105039": { pass: "73819", limit: 0 },
             "710725105040": { pass: "19283", limit: 0 },
             "710725105041": { pass: "84710", limit: 0 },
-            "710725105042": { pass: "77777", limit: Infinity }, // 🔥 GOD MODE
+            "710725105042": { pass: "77777", limit: Infinity },
             "710725105043": { pass: "38291", limit: 0 },
-            "710725105044": { pass: "99999", limit: Infinity }, // 🔥 GOD MODE
+            "710725105044": { pass: "99999", limit: Infinity },
             "710725105045": { pass: "61029", limit: 0 },
             "710725105046": { pass: "29381", limit: 0 },
             "710725105047": { pass: "84720", limit: 0 },
@@ -938,11 +959,7 @@ Return ONLY the structured record using >> format.`;
         let currentUserReg = null;
         let currentUserObj = null;
 
-        let config = {
-            courseCode: "22UCS202",
-            courseName: "C PROGRAMMING"
-        };
-
+        let config = { courseCode: "22UCS202", courseName: "C PROGRAMMING" };
         let isLocked = false;
 
         // --- CUSTOM SYSTEM ALERTS ---
@@ -1031,7 +1048,6 @@ Return ONLY the structured record using >> format.`;
         async function handleLogin(e) {
             e.preventDefault();
             const suffix = document.getElementById("loginRegSuffix").value.trim();
-            // Automatically pads '1' to '01' if they only type one digit
             const reg = "7107251050" + suffix.padStart(2, '0');
             const pass = document.getElementById("loginPass").value.trim();
             const btn = document.getElementById("loginBtn");
@@ -1081,7 +1097,6 @@ Return ONLY the structured record using >> format.`;
                 return;
             }
 
-            // Success
             currentUserReg = reg;
             currentUserObj = user;
 
@@ -1094,12 +1109,11 @@ Return ONLY the structured record using >> format.`;
             
             document.getElementById("loginContainer").style.display = "none";
             document.getElementById("appContainer").style.display = "block";
-            // document.getElementById("regNo").value = reg; // Removed auto-filling of Register Number
 
             updateTopStatus();
         }
 
-        // --- SMART PASTE LOGIC ---
+        // --- SMART PASTE LOGIC (MULTI-MODE AWARE) ---
         function extractFlexible(text, labelVariants) {
             const HEADINGS = [
                 "NAME","REGISTER_NO","REGISTER NO","REG NO",
@@ -1117,11 +1131,24 @@ Return ONLY the structured record using >> format.`;
             return "";
         }
 
+        function extractNumbered(text, base, count) {
+            let values = [];
+            for (let i = 1; i <= count; i++) {
+                // Grabs until the next ALL_CAPS_HEADING >>
+                const regex = new RegExp(base + "\\s+" + i + "\\s*(?:>>|:)\\s*([\\s\\S]*?)(?=\\n[A-Z_0-9 ]+\\s*(?:>>|:)|$)", "i");
+                const match = text.match(regex);
+                values.push(match ? match[1].trim() : "");
+            }
+            return values;
+        }
+
         function isValidValue(val) { return val && !val.includes(":") && !val.includes(">>"); }
 
         function autoFillForm() {
             const text = document.getElementById("autoFillBox").value;
             if (!text.trim()) return;
+
+            const mode = document.getElementById("modeSelect").value;
 
             const name = extractFlexible(text, ["STUDENT NAME", "NAME"]);
             const reg = extractFlexible(text, ["REGISTER_NO", "REGISTER NO", "REG NO", "REGISTRATION NUMBER"]);
@@ -1129,9 +1156,6 @@ Return ONLY the structured record using >> format.`;
             const date = extractFlexible(text, ["DATE", "EXP DATE"]);
             const title = extractFlexible(text, ["EXPERIMENT TITLE", "TITLE"]);
             const aim = extractFlexible(text, ["AIM", "OBJECTIVE"]);
-            const algo = extractFlexible(text, ["ALGORITHM", "PROCEDURE"]);
-            const prog = extractFlexible(text, ["PROGRAM", "SOURCE CODE", "CODE"]);
-            const output = extractFlexible(text, ["OUTPUT", "EXPECTED OUTPUT", "RESULTS"]);
             const result = extractFlexible(text, ["RESULT", "CONCLUSION"]);
 
             let populated = false;
@@ -1150,10 +1174,49 @@ Return ONLY the structured record using >> format.`;
             
             if (title) { document.getElementById("expTitle").value = title; populated = true; }
             if (aim) { document.getElementById("aim").value = aim; populated = true; }
-            if (algo) { document.getElementById("algorithm").value = algo; populated = true; }
-            if (prog) { document.getElementById("program").value = prog; populated = true; }
-            if (output) { document.getElementById("output").value = output; populated = true; }
             if (result) { document.getElementById("result").value = result; populated = true; }
+
+            if (mode === "default") {
+                const algo = extractFlexible(text, ["ALGORITHM", "PROCEDURE"]);
+                const prog = extractFlexible(text, ["PROGRAM", "SOURCE CODE", "CODE"]);
+                const output = extractFlexible(text, ["OUTPUT", "EXPECTED OUTPUT", "RESULTS"]);
+                
+                if (algo) { document.getElementById("algorithm").value = algo; populated = true; }
+                if (prog) { document.getElementById("program").value = prog; populated = true; }
+                if (output) { document.getElementById("output").value = output; populated = true; }
+            } else {
+                const algN = parseInt(document.getElementById("algCount").value) || 1;
+                const progN = parseInt(document.getElementById("progCount").value) || 1;
+                const opN = parseInt(document.getElementById("opCount").value) || 1;
+
+                const algs = extractNumbered(text, "ALGORITHM", algN);
+                const progs = extractNumbered(text, "PROGRAM", progN);
+                const ops = extractNumbered(text, "OUTPUT", opN);
+
+                for (let i = 1; i <= algN; i++) {
+                    let val = algs[i - 1] || "";
+                    if (!val && algN === 1) val = extractFlexible(text, ["ALGORITHM"]) || ""; // smart fallback
+                    if (val && document.getElementById("algorithm_" + i)) { 
+                        document.getElementById("algorithm_" + i).value = val; populated = true; 
+                    }
+                }
+
+                for (let i = 1; i <= progN; i++) {
+                    let val = progs[i - 1] || "";
+                    if (!val && progN === 1) val = extractFlexible(text, ["PROGRAM"]) || ""; // smart fallback
+                    if (val && document.getElementById("program_" + i)) { 
+                        document.getElementById("program_" + i).value = val; populated = true; 
+                    }
+                }
+
+                for (let i = 1; i <= opN; i++) {
+                    let val = ops[i - 1] || "";
+                    if (!val && opN === 1) val = extractFlexible(text, ["OUTPUT"]) || ""; // smart fallback
+                    if (val && document.getElementById("output_" + i)) { 
+                        document.getElementById("output_" + i).value = val; populated = true; 
+                    }
+                }
+            }
 
             if (populated) {
                 const status = document.getElementById("aiStatus");
@@ -1171,8 +1234,9 @@ Return ONLY the structured record using >> format.`;
             if (!confirmed) return;
 
             isLocked = true;
-            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
-            fieldsToLock.forEach(id => {
+            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'modeSelect', 'algCount', 'progCount', 'opCount'];
+            
+            baseFields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
                     if (el.type === 'checkbox') el.disabled = true;
@@ -1180,6 +1244,29 @@ Return ONLY the structured record using >> format.`;
                     el.classList.add('locked-input');
                 }
             });
+
+            // Handle Dynamic Multi-mode Fields
+            const mode = document.getElementById("modeSelect").value;
+            if (mode === "default") {
+                document.getElementById('algorithm').readOnly = true;
+                document.getElementById('algorithm').classList.add('locked-input');
+                document.getElementById('output').readOnly = true;
+                document.getElementById('output').classList.add('locked-input');
+                // Program stays editable!
+            } else {
+                const algN = parseInt(document.getElementById("algCount").value) || 1;
+                const opN = parseInt(document.getElementById("opCount").value) || 1;
+                for(let i=1; i<=algN; i++) {
+                    let el = document.getElementById("algorithm_"+i);
+                    if(el) { el.readOnly = true; el.classList.add('locked-input'); }
+                }
+                for(let i=1; i<=opN; i++) {
+                    let el = document.getElementById("output_"+i);
+                    if(el) { el.readOnly = true; el.classList.add('locked-input'); }
+                }
+                // Programs stay editable!
+            }
+
             document.getElementById('autoFillBox').readOnly = true;
             document.getElementById('autoFillBox').classList.add('locked-input');
 
@@ -1194,8 +1281,8 @@ Return ONLY the structured record using >> format.`;
         }
 
         function unlockInputs() {
-            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
-            fieldsToLock.forEach(id => {
+            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'modeSelect', 'algCount', 'progCount', 'opCount'];
+            baseFields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
                     if (el.type === 'checkbox') el.disabled = false;
@@ -1203,6 +1290,26 @@ Return ONLY the structured record using >> format.`;
                     el.classList.remove('locked-input');
                 }
             });
+
+            const mode = document.getElementById("modeSelect").value;
+            if (mode === "default") {
+                document.getElementById('algorithm').readOnly = false;
+                document.getElementById('algorithm').classList.remove('locked-input');
+                document.getElementById('output').readOnly = false;
+                document.getElementById('output').classList.remove('locked-input');
+            } else {
+                const algN = parseInt(document.getElementById("algCount").value) || 1;
+                const opN = parseInt(document.getElementById("opCount").value) || 1;
+                for(let i=1; i<=algN; i++) {
+                    let el = document.getElementById("algorithm_"+i);
+                    if(el) { el.readOnly = false; el.classList.remove('locked-input'); }
+                }
+                for(let i=1; i<=opN; i++) {
+                    let el = document.getElementById("output_"+i);
+                    if(el) { el.readOnly = false; el.classList.remove('locked-input'); }
+                }
+            }
+
             document.getElementById('autoFillBox').readOnly = false;
             document.getElementById('autoFillBox').classList.remove('locked-input');
 
@@ -1240,17 +1347,23 @@ Return ONLY the structured record using >> format.`;
             isLocked = false;
 
             // Clear all form contents
-            document.getElementById('studentName').value = '';
-            document.getElementById('regNo').value = '';
-            document.getElementById('expNo').value = '';
-            document.getElementById('expDate').value = '';
-            document.getElementById('expTitle').value = '';
-            document.getElementById('aim').value = '';
-            document.getElementById('algorithm').value = '';
-            document.getElementById('program').value = '';
-            document.getElementById('output').value = '';
-            document.getElementById('result').value = '';
-            document.getElementById('autoFillBox').value = '';
+            const baseFieldsToClear = ['studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'autoFillBox'];
+            baseFieldsToClear.forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).value = '';
+            });
+
+            if (document.getElementById("modeSelect").value === "default") {
+                document.getElementById('algorithm').value = '';
+                document.getElementById('program').value = '';
+                document.getElementById('output').value = '';
+            } else {
+                const algN = parseInt(document.getElementById("algCount").value) || 1;
+                const progN = parseInt(document.getElementById("progCount").value) || 1;
+                const opN = parseInt(document.getElementById("opCount").value) || 1;
+                for(let i=1; i<=algN; i++) { if(document.getElementById("algorithm_"+i)) document.getElementById("algorithm_"+i).value = ''; }
+                for(let i=1; i<=progN; i++) { if(document.getElementById("program_"+i)) document.getElementById("program_"+i).value = ''; }
+                for(let i=1; i<=opN; i++) { if(document.getElementById("output_"+i)) document.getElementById("output_"+i).value = ''; }
+            }
             
             const aiStatus = document.getElementById("aiStatus");
             if (aiStatus) aiStatus.classList.remove("visible");
@@ -1262,17 +1375,18 @@ Return ONLY the structured record using >> format.`;
 
         // Modal Controls
         function openEditor(id) {
-            if (isLocked && id !== 'program') {
+            if (isLocked && !id.includes('program')) {
                 showSystemModal("Inputs locked. Only the Source Code can be edited.");
                 return;
             }
 
             currentEditingId = id;
-            document.getElementById('modalTitle').innerText = "Editor - " + id.charAt(0).toUpperCase() + id.slice(1);
+            let displayTitle = id.replace('_', ' ').toUpperCase();
+            document.getElementById('modalTitle').innerText = "Editor - " + displayTitle;
             document.getElementById('modalTextArea').value = document.getElementById(id).value;
             
-            document.getElementById('cleanBtn').style.display = (id === 'program' || id === 'algorithm') ? 'flex' : 'none';
-            document.getElementById('capBtn').style.display = (id !== 'program' && id !== 'output') ? 'flex' : 'none';
+            document.getElementById('cleanBtn').style.display = (id.includes('program') || id.includes('algorithm')) ? 'flex' : 'none';
+            document.getElementById('capBtn').style.display = (!id.includes('program') && !id.includes('output')) ? 'flex' : 'none';
 
             document.getElementById('editorModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1430,14 +1544,44 @@ Return ONLY the structured record using >> format.`;
                 const dateRaw = document.getElementById('expDate').value;
                 const date = dateRaw ? dateRaw.split('-').reverse().join('-') : "";
                 const title = document.getElementById('expTitle').value;
+                const mode = document.getElementById('modeSelect').value;
 
-                const sections = [
-                    { title: 'AIM :', content: normalizeText(document.getElementById('aim').value), type: 'NORMAL' },
-                    { title: 'ALGORITHM :', content: normalizeText(document.getElementById('algorithm').value), type: 'NORMAL' },
-                    { title: 'PROGRAM :', content: document.getElementById('program').value, type: 'NORMAL' },
-                    { title: 'OUTPUT :', content: document.getElementById('output').value, type: 'OUTPUT' },
-                    { title: 'RESULT :', content: normalizeText(document.getElementById('result').value), type: 'NORMAL' }
+                let sections = [
+                    { title: 'AIM :', content: normalizeText(document.getElementById('aim').value), type: 'NORMAL' }
                 ];
+
+                if (mode === "default") {
+                    sections.push({ title: 'ALGORITHM :', content: normalizeText(document.getElementById('algorithm').value), type: 'NORMAL' });
+                    sections.push({ title: 'PROGRAM :', content: document.getElementById('program').value, type: 'NORMAL' });
+                    sections.push({ title: 'OUTPUT :', content: document.getElementById('output').value, type: 'OUTPUT' });
+                } else {
+                    const algN = parseInt(document.getElementById("algCount").value) || 1;
+                    const progN = parseInt(document.getElementById("progCount").value) || 1;
+                    const opN = parseInt(document.getElementById("opCount").value) || 1;
+
+                    for (let i = 1; i <= algN; i++) {
+                        let val = document.getElementById("algorithm_"+i) ? document.getElementById("algorithm_"+i).value : "";
+                        if(val.trim()) {
+                            sections.push({ title: algN === 1 ? 'ALGORITHM :' : `ALGORITHM ${i} :`, content: normalizeText(val), type: 'NORMAL' });
+                        }
+                    }
+
+                    for (let i = 1; i <= progN; i++) {
+                        let val = document.getElementById("program_"+i) ? document.getElementById("program_"+i).value : "";
+                        if(val.trim()) {
+                            sections.push({ title: progN === 1 ? 'PROGRAM :' : `PROGRAM ${i} :`, content: val, type: 'NORMAL' });
+                        }
+                    }
+
+                    for (let i = 1; i <= opN; i++) {
+                        let val = document.getElementById("output_"+i) ? document.getElementById("output_"+i).value : "";
+                        if(val.trim()) {
+                            sections.push({ title: opN === 1 ? 'OUTPUT :' : `OUTPUT ${i} :`, content: val, type: 'OUTPUT' });
+                        }
+                    }
+                }
+
+                sections.push({ title: 'RESULT :', content: normalizeText(document.getElementById('result').value), type: 'NORMAL' });
 
                 const lineSpacing = 6;
                 let currentY = 55;
