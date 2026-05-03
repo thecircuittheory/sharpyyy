@@ -276,6 +276,53 @@
         }
         .ai-status.visible { opacity: 1; transform: translateY(0); }
 
+        /* ============================================================
+           MODE SWITCHER (PILL DESIGN)
+           ============================================================ */
+        .mode-switcher {
+            display: flex;
+            position: relative;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02), 0 4px 10px rgba(0,0,0,0.02);
+            z-index: 1;
+        }
+        .mode-switcher input[type="radio"] {
+            display: none;
+        }
+        .mode-switch-btn {
+            flex: 1;
+            text-align: center;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 12px;
+            transition: color 0.4s ease;
+            z-index: 2;
+        }
+        .mode-switcher input[type="radio"]:checked + .mode-switch-btn {
+            color: #fff;
+        }
+        .mode-switch-slider {
+            position: absolute;
+            top: 6px;
+            bottom: 6px;
+            left: 6px;
+            width: calc(50% - 6px);
+            background: var(--primary-grad);
+            border-radius: 12px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: -1;
+            box-shadow: 0 4px 12px var(--primary-light);
+        }
+        #mode-multi:checked ~ .mode-switch-slider {
+            transform: translateX(100%);
+        }
+
         .btn-main {
             width: 100%; border: none; color: #fff; padding: 18px; font-size: 1.1rem; font-weight: 700; 
             letter-spacing: 1px; border-radius: 16px; cursor: pointer; 
@@ -496,13 +543,18 @@
                             <input type="text" id="expTitle" required placeholder="Implementation of Linked List" autocomplete="off">
                         </div>
 
-                        <!-- MODE SELECTOR -->
+                        <!-- CUSTOM PILL MODE SWITCHER -->
                         <div class="input-group full-width">
                             <label>Generation Mode</label>
-                            <select id="modeSelect" onchange="handleModeChange()">
-                                <option value="default">Default Mode (1 Algo, 1 Prog, 1 Out)</option>
-                                <option value="multi">Multi Mode (Multiple Algos, Progs, Outs)</option>
-                            </select>
+                            <div class="mode-switcher" id="modeSwitcherUI">
+                                <input type="radio" id="mode-default" name="generationMode" value="default" checked onchange="handleModeChange()">
+                                <label for="mode-default" class="mode-switch-btn">Default Mode</label>
+                                
+                                <input type="radio" id="mode-multi" name="generationMode" value="multi" onchange="handleModeChange()">
+                                <label for="mode-multi" class="mode-switch-btn">Multi Mode</label>
+                                
+                                <div class="mode-switch-slider"></div>
+                            </div>
                         </div>
 
                         <!-- MULTI CONTROLS -->
@@ -699,9 +751,15 @@
         const savedTheme = localStorage.getItem('sharpness_theme') || 'sakura';
         document.documentElement.setAttribute('data-theme', savedTheme);
 
+        // Utility to get current selected mode from pill switcher
+        function getMode() {
+            const checked = document.querySelector('input[name="generationMode"]:checked');
+            return checked ? checked.value : "default";
+        }
+
         // --- DYNAMIC MULTI PROMPT ENGINE ---
         function getSystemPrompt() {
-            const mode = document.getElementById("modeSelect") ? document.getElementById("modeSelect").value : "default";
+            const mode = getMode();
 
             if (mode === "default") {
                 return `You are a Lab Record Normalization Engine designed for structured academic formatting and clean PDF rendering.
@@ -815,7 +873,7 @@ Return ONLY the structured record using >> format.`;
 
         // --- MULTI-MODE CONTROLS ---
         function handleModeChange() {
-            const mode = document.getElementById("modeSelect").value;
+            const mode = getMode();
             const controls = document.getElementById("multiControls");
             const multiContainer = document.getElementById("multiContainer");
             const defaultContainer = document.getElementById("defaultContainer");
@@ -1148,7 +1206,7 @@ Return ONLY the structured record using >> format.`;
             const text = document.getElementById("autoFillBox").value;
             if (!text.trim()) return;
 
-            const mode = document.getElementById("modeSelect").value;
+            const mode = getMode();
 
             const name = extractFlexible(text, ["STUDENT NAME", "NAME"]);
             const reg = extractFlexible(text, ["REGISTER_NO", "REGISTER NO", "REG NO", "REGISTRATION NUMBER"]);
@@ -1234,7 +1292,7 @@ Return ONLY the structured record using >> format.`;
             if (!confirmed) return;
 
             isLocked = true;
-            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'modeSelect', 'algCount', 'progCount', 'opCount'];
+            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'algCount', 'progCount', 'opCount'];
             
             baseFields.forEach(id => {
                 const el = document.getElementById(id);
@@ -1245,8 +1303,12 @@ Return ONLY the structured record using >> format.`;
                 }
             });
 
+            // Lock custom mode switcher
+            document.querySelectorAll('input[name="generationMode"]').forEach(r => r.disabled = true);
+            document.getElementById('modeSwitcherUI').classList.add('locked-input');
+
             // Handle Dynamic Multi-mode Fields
-            const mode = document.getElementById("modeSelect").value;
+            const mode = getMode();
             if (mode === "default") {
                 document.getElementById('algorithm').readOnly = true;
                 document.getElementById('algorithm').classList.add('locked-input');
@@ -1271,7 +1333,7 @@ Return ONLY the structured record using >> format.`;
             document.getElementById('autoFillBox').classList.add('locked-input');
 
             const btnLock = document.getElementById('btnLock');
-            btnLock.innerHTML = `<svg style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg> Locked`;
+            btnLock.innerHTML = `<svg style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg> Locked`;
             btnLock.style.borderColor = "var(--text-secondary)";
             btnLock.style.color = "var(--text-secondary)";
             btnLock.disabled = true;
@@ -1281,7 +1343,7 @@ Return ONLY the structured record using >> format.`;
         }
 
         function unlockInputs() {
-            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'modeSelect', 'algCount', 'progCount', 'opCount'];
+            const baseFields = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'result', 'algCount', 'progCount', 'opCount'];
             baseFields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -1291,7 +1353,11 @@ Return ONLY the structured record using >> format.`;
                 }
             });
 
-            const mode = document.getElementById("modeSelect").value;
+            // Unlock custom mode switcher
+            document.querySelectorAll('input[name="generationMode"]').forEach(r => r.disabled = false);
+            document.getElementById('modeSwitcherUI').classList.remove('locked-input');
+
+            const mode = getMode();
             if (mode === "default") {
                 document.getElementById('algorithm').readOnly = false;
                 document.getElementById('algorithm').classList.remove('locked-input');
@@ -1352,7 +1418,7 @@ Return ONLY the structured record using >> format.`;
                 if(document.getElementById(id)) document.getElementById(id).value = '';
             });
 
-            if (document.getElementById("modeSelect").value === "default") {
+            if (getMode() === "default") {
                 document.getElementById('algorithm').value = '';
                 document.getElementById('program').value = '';
                 document.getElementById('output').value = '';
@@ -1544,7 +1610,7 @@ Return ONLY the structured record using >> format.`;
                 const dateRaw = document.getElementById('expDate').value;
                 const date = dateRaw ? dateRaw.split('-').reverse().join('-') : "";
                 const title = document.getElementById('expTitle').value;
-                const mode = document.getElementById('modeSelect').value;
+                const mode = getMode();
 
                 let sections = [
                     { title: 'AIM :', content: normalizeText(document.getElementById('aim').value), type: 'NORMAL' }
