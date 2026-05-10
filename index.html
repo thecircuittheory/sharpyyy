@@ -615,6 +615,11 @@
                         </div>
 
                         <div class="input-group">
+                            <label>Starting Page Number</label>
+                            <input type="number" id="startPageNo" value="1" min="1" required>
+                        </div>
+
+                        <div class="input-group">
                             <label>Date (Optional)</label>
                             <input type="date" id="expDate" autocomplete="off">
                         </div>
@@ -1171,7 +1176,7 @@ Return ONLY the structured record using >> format.`;
             if (!confirmed) return;
 
             isLocked = true;
-            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
+            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'startPageNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
             fieldsToLock.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -1194,7 +1199,7 @@ Return ONLY the structured record using >> format.`;
         }
 
         function unlockInputs() {
-            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
+            const fieldsToLock = ['firstPageOnly', 'studentName', 'regNo', 'expNo', 'startPageNo', 'expDate', 'expTitle', 'aim', 'algorithm', 'output', 'result'];
             fieldsToLock.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -1401,6 +1406,8 @@ Return ONLY the structured record using >> format.`;
             }
 
             try {
+                const startPageNo = parseInt(document.getElementById("startPageNo").value) || 1;
+
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
                 let hasVGAFont = false;
@@ -1579,6 +1586,28 @@ Return ONLY the structured record using >> format.`;
                         currentY += lineSpacing/2;
                     }
                 });
+
+                const totalPages = doc.internal.getNumberOfPages();
+
+                for(let i = 1; i <= totalPages; i++)
+                {
+                    doc.setPage(i);
+
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+
+                    const currentPageNumber = startPageNo + i - 1;
+
+                    doc.setFont("times","normal");
+                    doc.setFontSize(11);
+
+                    doc.text(
+                        String(currentPageNumber),
+                        pageWidth / 2,
+                        pageHeight - 10,
+                        { align: "center" }
+                    );
+                }
 
                 doc.save(`${regNoValue.trim() || 'NoName'}_Record.pdf`);
 
